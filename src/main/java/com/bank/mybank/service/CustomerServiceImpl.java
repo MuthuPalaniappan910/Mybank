@@ -1,15 +1,19 @@
 package com.bank.mybank.service;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.bank.mybank.constants.ApplicationConstants;
 import com.bank.mybank.dto.AddFavouriteRequestDto;
 import com.bank.mybank.dto.AddFavouriteResponseDto;
+import com.bank.mybank.dto.CustomerFavouriteAccountResponse;
+import com.bank.mybank.dto.FavouriteBeneficiariesResponseDto;
 import com.bank.mybank.entity.Customer;
 import com.bank.mybank.entity.CustomerAccount;
 import com.bank.mybank.entity.CustomerFavouriteAccount;
@@ -61,4 +65,38 @@ public class CustomerServiceImpl implements CustomerService{
 		throw new NoAccountListException ("Please delete one of your favourite accounts to add a new beneficiary accounts in your list");
 	}
 
+	@Override
+	public Optional<FavouriteBeneficiariesResponseDto> viewFavouriteAccounts(Long customerId) throws GeneralException {
+		FavouriteBeneficiariesResponseDto favouriteBeneficiariesResponseDto = new FavouriteBeneficiariesResponseDto();
+		
+		
+		List<CustomerFavouriteAccountResponse> customerFavouriteAccountResponseList= new ArrayList<>();
+		CustomerFavouriteAccountResponse customerFavouriteAccountResponse= new CustomerFavouriteAccountResponse();
+		
+		Optional<Customer> customer = customerRepository.findById(customerId);
+		
+		if(!customer.isPresent()) {
+			throw new GeneralException(ApplicationConstants.INVALID_CUSTOMER);
+		}
+		
+		Optional<List<CustomerAccount>> customerAccountList = customerAccountRepository.findByCustomerId(customer);
+		if(!customerAccountList.isPresent()) {
+			throw new GeneralException(ApplicationConstants.INVALID_ACCOUNT_NUMBER);
+		}
+		for (CustomerAccount finalListCustomer : customerAccountList.get()) {
+			
+			Optional<CustomerFavouriteAccount> customerFavouriteAccountOptional=customerFavouriteAccountRepository.findByCustomerAccountNumberAndCustomerFavouriteAccountStatusOrderByAccountAddedOnDesc(finalListCustomer,"active");
+			
+					if(!customerFavouriteAccountOptional.isPresent()) {
+						throw new GeneralException("Error");
+					}					
+					customerFavouriteAccountResponse.setBeneficiaryAccountName(customerFavouriteAccountOptional.get().getBeneficiaryAccountName());
+					customerFavouriteAccountResponse.setIfscCode(customerFavouriteAccountOptional.get().getIfscCode());
+					customerFavouriteAccountResponse.setBeneficiaryAccountNumber(customerFavouriteAccountOptional.get().getBeneficiaryAccountNumber().getCustomerAccountNumber());
+					customerFavouriteAccountResponseList.add(customerFavouriteAccountResponse);					
+		}
+		
+		favouriteBeneficiariesResponseDto.setFavouritesList(customerFavouriteAccountResponseList);
+		return Optional.of(favouriteBeneficiariesResponseDto);
+	}
 }

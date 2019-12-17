@@ -19,4 +19,13 @@ public class ApplicationConstants {
 
 	public static final String LOGIN_ERROR = "Invalid customer credentials, Please try with valid Customer Id and Password";
 	public static final String LOGIN_SUCCESS = "Login Success";
+
+	public static final Integer FAVOURITE_ACCOUNT_SUCCESS_CODE = 200;
+	public static final String FAVOURITE_ACCOUNT_SUCCESS_MESSAGE = "You favourite Account LISt";
+	public static final Integer FAVOURITE_ACCOUNT_FAILURE_CODE = 200;
+	public static final String FAVOURITE_ACCOUNT_FAILURE_MESSAGE = "You favourite Account LISt";
+	
+	public static final String INVALID_CUSTOMER = "Invalid Customer";
+	public static final String INVALID_ACCOUNT_NUMBER = "Invalid Account Number";
+	
 }
