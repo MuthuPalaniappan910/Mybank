@@ -5,7 +5,7 @@ import lombok.Setter;
 
 @Getter
 @Setter
-public class AddFavouriteResponseDto {
+public class ResponseDto {
 	
 	private Integer statusCode;
 	private String message;

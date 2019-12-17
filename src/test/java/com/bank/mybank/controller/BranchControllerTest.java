@@ -38,13 +38,13 @@ public class BranchControllerTest {
 	public void testGetBankDetailsPositive() throws IFSCNotFoundException {
 		Mockito.when(branchService.getBankDetails("qwe123")).thenReturn(Optional.of(branchResponseDto));
 		Integer expected = branchController.getBankDetails("qwe123").getStatusCodeValue();
-		assertEquals(ApplicationConstants.SUCCESSCODE, expected);
+		assertEquals(ApplicationConstants.SUCCESS_CODE, expected);
 	}
 
 	@Test
 	public void testGetBankDetailsNegative() throws IFSCNotFoundException {
 		Mockito.when(branchService.getBankDetails("qwe123")).thenReturn(Optional.ofNullable(null));
 		Integer expected = branchController.getBankDetails("qwe123").getStatusCodeValue();
-		assertEquals(ApplicationConstants.FAILURECODE, expected);
+		assertEquals(ApplicationConstants.FAILURE_CODE, expected);
 	}
 }
