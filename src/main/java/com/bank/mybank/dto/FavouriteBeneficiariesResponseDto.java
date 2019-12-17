@@ -10,6 +10,7 @@ import lombok.Setter;
 @Setter
 public class FavouriteBeneficiariesResponseDto implements Serializable{
 	
+	private static final long serialVersionUID = 4758208273289187861L;
 	private Integer statusCode;
 	private String message;
 	private List<CustomerFavouriteAccountResponse> favouritesList;
