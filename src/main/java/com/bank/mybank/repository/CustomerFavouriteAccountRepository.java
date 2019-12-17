@@ -19,7 +19,15 @@ public interface CustomerFavouriteAccountRepository extends JpaRepository<Custom
 
 	CustomerFavouriteAccount findByBeneficiaryAccountNumber(CustomerAccount customerAccount);
 
+	List<CustomerFavouriteAccount> findAllByCustomerAccountNumberAndCustomerFavouriteAccountStatus(
+			CustomerAccount finalListCustomer, String string);
 
+
+	Optional<CustomerFavouriteAccount> findByCustomerAccountNumberAndCustomerFavouriteAccountStatus(
+			CustomerAccount finalListCustomer, String string);
+
+	Optional<CustomerFavouriteAccount> findByCustomerAccountNumberAndCustomerFavouriteAccountStatusOrderByAccountAddedOnDesc(
+			CustomerAccount finalListCustomer, String string);
 
 
 

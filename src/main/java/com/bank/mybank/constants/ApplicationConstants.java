@@ -22,4 +22,12 @@ public class ApplicationConstants {
 	public static final String STATUS_OF_INACTIVE_CODE = "inactive";
 
 	public static final String BENEFICIARY_DELETED_SUCCESSFULLY = "The beneficiary account has been deleted successfully";
+	public static final Integer FAVOURITE_ACCOUNT_SUCCESS_CODE = 200;
+	public static final String FAVOURITE_ACCOUNT_SUCCESS_MESSAGE = "You favourite Account LISt";
+	public static final Integer FAVOURITE_ACCOUNT_FAILURE_CODE = 200;
+	public static final String FAVOURITE_ACCOUNT_FAILURE_MESSAGE = "You favourite Account LISt";
+	
+	public static final String INVALID_CUSTOMER = "Invalid Customer";
+	public static final String INVALID_ACCOUNT_NUMBER = "Invalid Account Number";
+	
 }

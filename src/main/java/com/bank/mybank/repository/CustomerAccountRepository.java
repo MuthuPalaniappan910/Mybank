@@ -1,5 +1,6 @@
 package com.bank.mybank.repository;
 
+import java.util.List;
 import java.util.Optional;
 
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -14,5 +15,7 @@ public interface CustomerAccountRepository extends JpaRepository<CustomerAccount
 	CustomerAccount findByCustomerId(Customer customer);
 
 	Optional<CustomerAccount> findByCustomerAccountNumber(Long beneficiaryAccountNumber);
+
+	Optional<List<CustomerAccount>> findByCustomerId(Optional<Customer> customer);
 
 }

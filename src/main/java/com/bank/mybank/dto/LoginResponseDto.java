@@ -9,4 +9,5 @@ public class LoginResponseDto {
 	private Integer statusCode;
 	private String message;
 	private Long customerID;
+	private String customerName;
 }

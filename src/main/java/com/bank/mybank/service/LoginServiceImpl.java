@@ -37,6 +37,7 @@ public class LoginServiceImpl implements LoginService {
 		}
 		LoginResponseDto loginResponsedto = new LoginResponseDto();
 		loginResponsedto.setCustomerID(customerResponse.get().getCustomerId());
+		loginResponsedto.setCustomerName(customerResponse.get().getCustomerName());
 		return Optional.of(loginResponsedto);
 	}
 }
