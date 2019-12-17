@@ -1,5 +1,5 @@
 package com.bank.mybank.controller;
 
-public class CustomerController {
+public class CustomerControllerTest {
 
 }

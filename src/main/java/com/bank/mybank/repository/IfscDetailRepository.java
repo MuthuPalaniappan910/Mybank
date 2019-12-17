@@ -8,4 +8,6 @@ import com.bank.mybank.entity.IfscDetail;
 @Repository
 public interface IfscDetailRepository extends JpaRepository<IfscDetail, Long> {
 
+	IfscDetail findByIfscCode(String ifscCode);
+
 }
