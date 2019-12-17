@@ -11,6 +11,7 @@ public class AddFavouriteRequestDto {
 	private String beneficiaryAccountName;
 	private Long beneficiaryAccountNumber;
 	private String ifscCode;
+	private String actionType;
 }
 
 
