@@ -32,17 +32,25 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 public class LoginController {
 
-	
 	@Autowired
 	LoginService loginService;
-	
+
 	@PostMapping
+
+	/**
+	 * This method allows the customer to login to mybank application
+	 * 
+	 * @author chethana
+	 * @param loginRequestdto takes customerId and password
+	 * @return LoginResponseDto success/failure message
+	 * @throws GeneralException if the valid credentials are not present
+	 */
 	public ResponseEntity<Optional<LoginResponseDto>> login(@RequestBody LoginRequestDto loginRequestdto)
 			throws GeneralException {
 		log.info("Entering into login method of LoginController");
 		Optional<LoginResponseDto> loginResponsedto = loginService.login(loginRequestdto);
 		if (!loginResponsedto.isPresent()) {
-			LoginResponseDto loginResponse= new LoginResponseDto();
+			LoginResponseDto loginResponse = new LoginResponseDto();
 			loginResponse.setMessage(ApplicationConstants.LOGIN_ERROR);
 			loginResponse.setStatusCode(HttpStatus.NOT_FOUND.value());
 			return new ResponseEntity<>(Optional.of(loginResponse), HttpStatus.NOT_FOUND);
@@ -50,7 +58,7 @@ public class LoginController {
 		loginResponsedto.get().setMessage(ApplicationConstants.LOGIN_SUCCESS);
 		loginResponsedto.get().setStatusCode(HttpStatus.OK.value());
 		return new ResponseEntity<>(loginResponsedto, HttpStatus.OK);
-		
+
 	}
 
 }
