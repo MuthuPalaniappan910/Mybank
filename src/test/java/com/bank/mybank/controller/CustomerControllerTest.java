@@ -10,8 +10,8 @@ import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
-import com.bank.mybank.dto.AddFavouriteRequestDto;
-import com.bank.mybank.dto.AddFavouriteResponseDto;
+import com.bank.mybank.dto.RequestDto;
+import com.bank.mybank.dto.ResponseDto;
 import com.bank.mybank.exception.CustomerAccountNotFoundException;
 import com.bank.mybank.exception.GeneralException;
 import com.bank.mybank.exception.NoAccountListException;
@@ -26,18 +26,18 @@ public class CustomerControllerTest {
 	@Mock
 	CustomerService customerService;
 	
-	AddFavouriteRequestDto addFavouriteRequestDto=null;
-	AddFavouriteResponseDto addFavouriteResponseDto=null;
+	RequestDto addFavouriteRequestDto=null;
+	ResponseDto addFavouriteResponseDto=null;
 	
 	@Before
 	public void before() {
-		addFavouriteRequestDto=new AddFavouriteRequestDto();
+		addFavouriteRequestDto=new RequestDto();
 		addFavouriteRequestDto.setBeneficiaryAccountName("bindu");
 		addFavouriteRequestDto.setBeneficiaryAccountNumber(11L);
 		addFavouriteRequestDto.setCustomerId(1L);
 		addFavouriteRequestDto.setIfscCode("hdfc100");
 		
-		addFavouriteResponseDto=new AddFavouriteResponseDto();
+		addFavouriteResponseDto=new ResponseDto();
 	}
 	
 	@Test
@@ -49,7 +49,7 @@ public class CustomerControllerTest {
 	
 	@Test(expected = GeneralException.class)
 	public void testAddFavouritePayeeForNegative() throws NoAccountListException, CustomerAccountNotFoundException, GeneralException {
-		Optional<AddFavouriteResponseDto> responseFavourite=Optional.ofNullable(null);
+		Optional<ResponseDto> responseFavourite=Optional.ofNullable(null);
 		Mockito.when(customerService.addFavourite(addFavouriteRequestDto)).thenReturn(responseFavourite);
 		customerController.addFavouritePayee(addFavouriteRequestDto);
 	}

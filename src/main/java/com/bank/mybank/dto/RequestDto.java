@@ -5,7 +5,7 @@ import lombok.Setter;
 
 @Getter
 @Setter
-public class AddFavouriteRequestDto {
+public class RequestDto {
 	
 	private Long customerId;
 	private String beneficiaryAccountName;

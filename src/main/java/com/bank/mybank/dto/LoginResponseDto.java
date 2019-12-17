@@ -6,7 +6,7 @@ import lombok.Setter;
 @Getter
 @Setter
 public class LoginResponseDto {
-	public Integer statusCode;
-	public String message;
-	public Long customerID;
+	private Integer statusCode;
+	private String message;
+	private Long customerID;
 }

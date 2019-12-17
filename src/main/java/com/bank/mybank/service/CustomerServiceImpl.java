@@ -8,8 +8,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.bank.mybank.constants.ApplicationConstants;
-import com.bank.mybank.dto.AddFavouriteRequestDto;
-import com.bank.mybank.dto.AddFavouriteResponseDto;
+import com.bank.mybank.dto.RequestDto;
+import com.bank.mybank.dto.ResponseDto;
 import com.bank.mybank.entity.Customer;
 import com.bank.mybank.entity.CustomerAccount;
 import com.bank.mybank.entity.CustomerFavouriteAccount;
@@ -33,7 +33,7 @@ public class CustomerServiceImpl implements CustomerService{
 	CustomerRepository customerRepository;
 
 	@Override
-	public Optional<AddFavouriteResponseDto> addFavourite(AddFavouriteRequestDto addFavouriteRequestDto) throws NoAccountListException,CustomerAccountNotFoundException, GeneralException {
+	public Optional<ResponseDto> addFavourite(RequestDto addFavouriteRequestDto) throws NoAccountListException,CustomerAccountNotFoundException, GeneralException {
 		Customer customer=customerRepository.findByCustomerId(addFavouriteRequestDto.getCustomerId());
 		CustomerAccount customerAccount=customerAccountRepository.findByCustomerId(customer);
 		Optional<CustomerAccount> customerBeneficiaryAccount=customerAccountRepository.findByCustomerAccountNumber(addFavouriteRequestDto.getBeneficiaryAccountNumber());
@@ -55,10 +55,28 @@ public class CustomerServiceImpl implements CustomerService{
 			customerFavouriteAccount.setIfscCode(addFavouriteRequestDto.getIfscCode());
 			customerFavouriteAccount.setAccountAddedOn(LocalDateTime.now());
 			customerFavouriteAccountRepository.save(customerFavouriteAccount);
-			AddFavouriteResponseDto addFavouriteResponseDto=new AddFavouriteResponseDto();
+			ResponseDto addFavouriteResponseDto=new ResponseDto();
 			return Optional.of(addFavouriteResponseDto);
 		}
 		throw new NoAccountListException ("Please delete one of your favourite accounts to add a new beneficiary accounts in your list");
 	}
+
+	@Override
+	public Optional<ResponseDto> deleteFavourite(RequestDto deleteRequestDto) {
+		Customer customer=customerRepository.findByCustomerId(deleteRequestDto.getCustomerId());
+		CustomerAccount customerAccount=customerAccountRepository.findByCustomerId(customer);
+		Optional<CustomerAccount> customerBeneficiaryAccount=customerAccountRepository.findByCustomerAccountNumber(deleteRequestDto.getBeneficiaryAccountNumber());
+		if(customerBeneficiaryAccount.isPresent()) {
+		Optional<CustomerFavouriteAccount> customerFavouriteAccountDetail=customerFavouriteAccountRepository.findByCustomerAccountNumberAndBeneficiaryAccountNumber(customerAccount,customerBeneficiaryAccount.get());
+		if(customerFavouriteAccountDetail.isPresent()) {
+		customerFavouriteAccountDetail.get().setCustomerFavouriteAccountStatus(ApplicationConstants.STATUS_OF_INACTIVE_CODE);
+		customerFavouriteAccountRepository.save(customerFavouriteAccountDetail.get());
+		ResponseDto addFavouriteResponseDto=new ResponseDto();
+		return Optional.of(addFavouriteResponseDto);
+		}
+		}
+		return Optional.ofNullable(null);
+	}
+	
 
 }

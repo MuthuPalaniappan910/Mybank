@@ -11,12 +11,15 @@ public class ApplicationConstants {
 
 	public static final String STATUS_OF_ACTIVE_ACCOUNT = "active";
 
-	public static String IFSC_SUCCESSMESSAGE = "You have a correct branch name";
-	public static String IFSC_FAILUREMESSAGE = "Please check ifsc code entered";
-	public static Integer SUCCESSCODE = 200;
-	public static Integer FAILURECODE = 404;
+	public static final String IFSC_SUCCESS_MESSAGE = "You have a correct branch name";
+	public static final  String IFSC_FAILURE_MESSAGE = "Invalid IFSC Code, Please enter valid IFSC code to save the beneficiary details";
+	public static final Integer FAILURE_CODE = 404;
 	
 
 	public static final String LOGIN_ERROR = "Invalid customer credentials, Please try with valid Customer Id and Password";
 	public static final String LOGIN_SUCCESS = "Login Success";
+
+	public static final String STATUS_OF_INACTIVE_CODE = "inactive";
+
+	public static final String BENEFICIARY_DELETED_SUCCESSFULLY = "The beneficiary account has been deleted successfully";
 }
