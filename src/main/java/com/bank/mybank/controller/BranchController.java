@@ -47,12 +47,12 @@ public class BranchController {
 			branchResponseDto.setIfscCode(response.get().getIfscCode());
 			branchResponseDto.setPincode(response.get().getPincode());
 			branchResponseDto.setStatusCode(response.get().getStatusCode());
-			branchResponseDto.setMessage(ApplicationConstants.IFSC_SUCCESSMESSAGE);
-			branchResponseDto.setStatusCode(ApplicationConstants.SUCCESSCODE);
+			branchResponseDto.setMessage(ApplicationConstants.IFSC_SUCCESS_MESSAGE);
+			branchResponseDto.setStatusCode(ApplicationConstants.SUCCESS_CODE);
 			return new ResponseEntity<>(branchResponseDto, HttpStatus.OK);
 		}
-		branchResponseDto.setMessage(ApplicationConstants.IFSC_FAILUREMESSAGE);
-		branchResponseDto.setStatusCode(ApplicationConstants.FAILURECODE);
+		branchResponseDto.setMessage(ApplicationConstants.IFSC_FAILURE_MESSAGE);
+		branchResponseDto.setStatusCode(ApplicationConstants.FAILURE_CODE);
 		return new ResponseEntity<>(branchResponseDto, HttpStatus.NOT_FOUND);
 	}
 }

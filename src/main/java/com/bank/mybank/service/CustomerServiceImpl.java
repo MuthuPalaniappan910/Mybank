@@ -9,8 +9,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.bank.mybank.constants.ApplicationConstants;
-import com.bank.mybank.dto.AddFavouriteRequestDto;
-import com.bank.mybank.dto.AddFavouriteResponseDto;
+import com.bank.mybank.dto.RequestDto;
+import com.bank.mybank.dto.ResponseDto;
 import com.bank.mybank.dto.CustomerFavouriteAccountResponse;
 import com.bank.mybank.dto.FavouriteBeneficiariesResponseDto;
 import com.bank.mybank.entity.Customer;
@@ -36,14 +36,14 @@ public class CustomerServiceImpl implements CustomerService {
 	CustomerRepository customerRepository;
 
 	@Override
-	public Optional<AddFavouriteResponseDto> addFavourite(AddFavouriteRequestDto addFavouriteRequestDto)
+	public Optional<ResponseDto> addFavourite(RequestDto addFavouriteRequestDto)
 			throws NoAccountListException, CustomerAccountNotFoundException, GeneralException {
 		Customer customer = customerRepository.findByCustomerId(addFavouriteRequestDto.getCustomerId());
 		CustomerAccount customerAccount = customerAccountRepository.findByCustomerId(customer);
 		Optional<CustomerAccount> customerBeneficiaryAccount = customerAccountRepository
 				.findByCustomerAccountNumber(addFavouriteRequestDto.getBeneficiaryAccountNumber());
 		if (!customerBeneficiaryAccount.isPresent()) {
-			throw new CustomerAccountNotFoundException("No customer account found");
+			throw new GeneralException(ApplicationConstants.BENEFICIARY_ALREADY_EXISTS);
 		}
 
 		Optional<CustomerFavouriteAccount> customerFavouriteAccountDetail = customerFavouriteAccountRepository
@@ -57,7 +57,7 @@ public class CustomerServiceImpl implements CustomerService {
 			customerFavouriteAccountDetail.get().setAccountAddedOn(LocalDateTime.now());
 			customerFavouriteAccountRepository.save(customerFavouriteAccountDetail.get());
 		} else {
-			throw new GeneralException("Beneficiary account already exists in favourite list");
+			throw new GeneralException(ApplicationConstants.BENEFICIARY_ALREADY_EXISTS);
 		}
 
 		if (!addFavouriteRequestDto.getActionType().equalsIgnoreCase("edit")) {
@@ -75,15 +75,34 @@ public class CustomerServiceImpl implements CustomerService {
 				customerFavouriteAccountRepository.save(customerFavouriteAccount);
 
 			} else {
-				throw new NoAccountListException(
-						"Please delete one of your favourite accounts to add a new beneficiary accounts in your list");
+				throw new NoAccountListException (ApplicationConstants.BENEFICIARY_LIST_EXCEEDS);
 			}
 		}
-		AddFavouriteResponseDto addFavouriteResponseDto = new AddFavouriteResponseDto();
+		ResponseDto addFavouriteResponseDto = new ResponseDto();
 		return Optional.of(addFavouriteResponseDto);
 	}
 
+	
+
 	@Override
+	public Optional<ResponseDto> deleteFavourite(RequestDto deleteRequestDto) throws CustomerAccountNotFoundException {
+		Customer customer=customerRepository.findByCustomerId(deleteRequestDto.getCustomerId());
+		CustomerAccount customerAccount=customerAccountRepository.findByCustomerId(customer);
+		Optional<CustomerAccount> customerBeneficiaryAccount=customerAccountRepository.findByCustomerAccountNumber(deleteRequestDto.getBeneficiaryAccountNumber());
+		if(customerBeneficiaryAccount.isPresent()) {
+		Optional<CustomerFavouriteAccount> customerFavouriteAccountDetail=customerFavouriteAccountRepository.findByCustomerAccountNumberAndBeneficiaryAccountNumber(customerAccount,customerBeneficiaryAccount.get());
+		if(customerFavouriteAccountDetail.isPresent()) {
+		customerFavouriteAccountDetail.get().setCustomerFavouriteAccountStatus(ApplicationConstants.STATUS_OF_INACTIVE_CODE);
+		customerFavouriteAccountRepository.save(customerFavouriteAccountDetail.get());
+		ResponseDto addDeleteResponseDto=new ResponseDto();
+		return Optional.of(addDeleteResponseDto);
+		}
+		throw new CustomerAccountNotFoundException(ApplicationConstants.INVALID_FAVOURITE_ACCOUNT);
+		}
+		throw new CustomerAccountNotFoundException(ApplicationConstants.INVALID_CUSTOMER_ACCOUNT);
+	}
+	
+
 	public Optional<FavouriteBeneficiariesResponseDto> viewFavouriteAccounts(Long customerId) throws GeneralException {
 		FavouriteBeneficiariesResponseDto favouriteBeneficiariesResponseDto = new FavouriteBeneficiariesResponseDto();
 

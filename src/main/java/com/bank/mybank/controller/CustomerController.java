@@ -15,14 +15,14 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.bank.mybank.constants.ApplicationConstants;
-import com.bank.mybank.dto.AddFavouriteRequestDto;
-import com.bank.mybank.dto.AddFavouriteResponseDto;
 import com.bank.mybank.dto.FavouriteBeneficiariesResponseDto;
+import com.bank.mybank.dto.RequestDto;
+import com.bank.mybank.dto.ResponseDto;
 import com.bank.mybank.exception.CustomerAccountNotFoundException;
 import com.bank.mybank.exception.GeneralException;
 import com.bank.mybank.exception.NoAccountListException;
 import com.bank.mybank.service.CustomerService;
-@RequestMapping("/customers")
+@RequestMapping("/customers/beneficiary")
 @RestController
 @CrossOrigin(allowedHeaders = { "*", "*/" }, origins = { "*", "*/" })
 public class CustomerController {
@@ -30,16 +30,26 @@ public class CustomerController {
 	@Autowired
 	CustomerService customerService;
 	
-	@PostMapping("/beneficiary")
-	public ResponseEntity<Optional<AddFavouriteResponseDto>> addFavouritePayee(@RequestBody AddFavouriteRequestDto addFavouriteRequestDto)
+	@PostMapping("")
+	public ResponseEntity<Optional<ResponseDto>> addFavouritePayee(@RequestBody RequestDto addFavouriteRequestDto)
 			throws GeneralException,NoAccountListException,CustomerAccountNotFoundException {
-		Optional<AddFavouriteResponseDto> favouriteListResponse = customerService.addFavourite(addFavouriteRequestDto);
-		if (!favouriteListResponse.isPresent()) {
+		Optional<ResponseDto> favouriteResponse = customerService.addFavourite(addFavouriteRequestDto);
+		if (!favouriteResponse.isPresent()) {
 			throw new GeneralException("Unable to add favourite payee");
 		}
-		favouriteListResponse.get().setStatusCode(ApplicationConstants.SUCCESS_CODE);
-		favouriteListResponse.get().setMessage(ApplicationConstants.BENEFICIARY_ADDED_SUCCESSFULLY);
-		return new ResponseEntity<>(favouriteListResponse, HttpStatus.OK);
+		favouriteResponse.get().setStatusCode(ApplicationConstants.SUCCESS_CODE);
+		favouriteResponse.get().setMessage(ApplicationConstants.BENEFICIARY_ADDED_SUCCESSFULLY);
+		return new ResponseEntity<>(favouriteResponse, HttpStatus.OK);
+	}
+	
+	@PostMapping("/action")
+	public ResponseEntity<Optional<ResponseDto>> deleteFavouritePayee(@RequestBody RequestDto deleteFavouriteRequestDto) throws CustomerAccountNotFoundException{
+		Optional<ResponseDto> deleteResponse = customerService.deleteFavourite(deleteFavouriteRequestDto);
+		if(deleteResponse.isPresent()) {
+		deleteResponse.get().setStatusCode(ApplicationConstants.SUCCESS_CODE);
+		deleteResponse.get().setMessage(ApplicationConstants.BENEFICIARY_DELETED_SUCCESSFULLY);
+		}
+		return new ResponseEntity<>(deleteResponse, HttpStatus.OK);
 	}
 	
 	@GetMapping("{customerId}/benefeciary")
@@ -59,9 +69,9 @@ public class CustomerController {
 	}
 	
 	@PutMapping("/beneficiary")
-	public ResponseEntity<Optional<AddFavouriteResponseDto>> editFavouritePayee(@RequestBody AddFavouriteRequestDto addFavouriteRequestDto)
+	public ResponseEntity<Optional<ResponseDto>> editFavouritePayee(@RequestBody RequestDto addFavouriteRequestDto)
 			throws GeneralException,NoAccountListException,CustomerAccountNotFoundException {
-		Optional<AddFavouriteResponseDto> favouriteListResponse = customerService.addFavourite(addFavouriteRequestDto);
+		Optional<ResponseDto> favouriteListResponse = customerService.addFavourite(addFavouriteRequestDto);
 		if (!favouriteListResponse.isPresent()) {
 			throw new GeneralException("Unable to edit favourite payee");
 		}

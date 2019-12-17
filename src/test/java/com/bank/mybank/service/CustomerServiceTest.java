@@ -16,8 +16,8 @@ import org.mockito.Mockito;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import com.bank.mybank.constants.ApplicationConstants;
-import com.bank.mybank.dto.AddFavouriteRequestDto;
-import com.bank.mybank.dto.AddFavouriteResponseDto;
+import com.bank.mybank.dto.RequestDto;
+import com.bank.mybank.dto.ResponseDto;
 import com.bank.mybank.entity.Customer;
 import com.bank.mybank.entity.CustomerAccount;
 import com.bank.mybank.entity.CustomerFavouriteAccount;
@@ -43,8 +43,8 @@ public class CustomerServiceTest {
 	@Mock
 	CustomerRepository customerRepository;
 
-	AddFavouriteRequestDto addFavouriteRequestDto = null;
-	AddFavouriteResponseDto addFavouriteResponseDto = null;
+	RequestDto addFavouriteRequestDto = null;
+	ResponseDto addFavouriteResponseDto = null;
 	Customer customer = null;
 	Customer customer1 = null;
 	CustomerAccount customerAccount = null;
@@ -54,13 +54,13 @@ public class CustomerServiceTest {
 
 	@Before
 	public void before() {
-		addFavouriteRequestDto = new AddFavouriteRequestDto();
+		addFavouriteRequestDto = new RequestDto();
 		addFavouriteRequestDto.setBeneficiaryAccountName("bindu");
 		addFavouriteRequestDto.setBeneficiaryAccountNumber(11L);
 		addFavouriteRequestDto.setCustomerId(1L);
 		addFavouriteRequestDto.setIfscCode("hdfc100");
 
-		addFavouriteResponseDto = new AddFavouriteResponseDto();
+		addFavouriteResponseDto = new ResponseDto();
 
 		customer = new Customer();
 		customer.setCustomerId(1L);
@@ -115,7 +115,7 @@ public class CustomerServiceTest {
 				.thenReturn(customerFavouriteAccountDetails);
 		Mockito.when(customerFavouriteAccountRepository.findAllByCustomerAccountNumber(customerAccount))
 				.thenReturn(listOffavouriteAccounts);
-		Optional<AddFavouriteResponseDto> addFavouriteResponseDto = customerServiceImpl
+		Optional<ResponseDto> addFavouriteResponseDto = customerServiceImpl
 				.addFavourite(addFavouriteRequestDto);
 		assertNotNull(addFavouriteResponseDto);
 	}
@@ -174,6 +174,48 @@ public class CustomerServiceTest {
 		Mockito.when(customerFavouriteAccountRepository.findAllByCustomerAccountNumber(customerAccount))
 				.thenReturn(listOffavouriteAccounts);
 		customerServiceImpl.addFavourite(addFavouriteRequestDto);
+	}
+	
+	@Test
+	public void testDeleteFavouriteForPositive() throws CustomerAccountNotFoundException {
+		Mockito.when(customerRepository.findByCustomerId(addFavouriteRequestDto.getCustomerId())).thenReturn(customer);
+		Mockito.when(customerAccountRepository.findByCustomerId(customer)).thenReturn(customerAccount);
+		Mockito.when(customerAccountRepository
+				.findByCustomerAccountNumber(addFavouriteRequestDto.getBeneficiaryAccountNumber()))
+				.thenReturn(Optional.of(customerAccountBeneficiary));
+		Mockito.when(customerFavouriteAccountRepository
+				.findByCustomerAccountNumberAndBeneficiaryAccountNumber(customerAccount, customerAccountBeneficiary))
+				.thenReturn(Optional.of(customerFavouriteAccount));
+		Optional<ResponseDto> addDeleteResponseDto = customerServiceImpl
+				.deleteFavourite(addFavouriteRequestDto);
+		assertNotNull(addDeleteResponseDto);
+	}
+	
+	@Test(expected = CustomerAccountNotFoundException.class)
+	public void testDeleteFavouriteForNegative1() throws CustomerAccountNotFoundException {
+		Mockito.when(customerRepository.findByCustomerId(addFavouriteRequestDto.getCustomerId())).thenReturn(customer);
+		Mockito.when(customerAccountRepository.findByCustomerId(customer)).thenReturn(customerAccount);
+		Optional<CustomerAccount> customerDetails = Optional.ofNullable(null);
+		Mockito.when(customerAccountRepository
+				.findByCustomerAccountNumber(addFavouriteRequestDto.getBeneficiaryAccountNumber()))
+				.thenReturn(customerDetails);
+		customerServiceImpl
+				.deleteFavourite(addFavouriteRequestDto);
+	}
+	
+	@Test(expected = CustomerAccountNotFoundException.class)
+	public void testDeleteFavouriteForNegative2() throws CustomerAccountNotFoundException {
+		Mockito.when(customerRepository.findByCustomerId(addFavouriteRequestDto.getCustomerId())).thenReturn(customer);
+		Mockito.when(customerAccountRepository.findByCustomerId(customer)).thenReturn(customerAccount);
+		Mockito.when(customerAccountRepository
+				.findByCustomerAccountNumber(addFavouriteRequestDto.getBeneficiaryAccountNumber()))
+				.thenReturn(Optional.of(customerAccountBeneficiary));
+		Optional<CustomerFavouriteAccount> customerDetails = Optional.ofNullable(null);
+		Mockito.when(customerFavouriteAccountRepository
+				.findByCustomerAccountNumberAndBeneficiaryAccountNumber(customerAccount, customerAccountBeneficiary))
+				.thenReturn(customerDetails);
+		customerServiceImpl
+				.deleteFavourite(addFavouriteRequestDto);
 	}
 
 }
