@@ -29,4 +29,9 @@ public class GlobalExceptionHandler {
 		return new ResponseEntity<>(errorResponse, HttpStatus.NOT_FOUND);
 	}
 
+	@ExceptionHandler(value = IFSCNotFoundException.class)
+	public ResponseEntity<ErrorResponse> handleException(IFSCNotFoundException exception) {
+		ErrorResponse errorResponse = new ErrorResponse(exception.getMessage());
+		return new ResponseEntity<>(errorResponse, HttpStatus.NOT_FOUND);
+	}
 }
