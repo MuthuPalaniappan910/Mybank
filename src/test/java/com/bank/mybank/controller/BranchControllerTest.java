@@ -1,5 +1,6 @@
 package com.bank.mybank.controller;
 
-public class BranchController {
+
+public class BranchControllerTest {
 
 }
