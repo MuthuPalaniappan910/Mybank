@@ -30,4 +30,11 @@ public class ApplicationConstants {
 	public static final String INVALID_CUSTOMER = "Invalid Customer";
 	public static final String INVALID_ACCOUNT_NUMBER = "Invalid Account Number";
 	
+	public static final String BENEFICIARY_ALREADY_EXISTS = "Beneficiary account already exists in favourite list";
+	
+	public static final String BENEFICIARY_LIST_EXCEEDS ="Please delete one of your favourite accounts to add a new beneficiary accounts in your list";
+	
+	public static final String INVALID_CUSTOMER_ACCOUNT = "The customer account does not exist";
+
+	public static final String INVALID_FAVOURITE_ACCOUNT = "No favourite account found";
 }

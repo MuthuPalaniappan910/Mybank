@@ -42,7 +42,7 @@ public class CustomerController {
 	}
 	
 	@PostMapping("/action")
-	public ResponseEntity<Optional<ResponseDto>> deleteFavouritePayee(@RequestBody RequestDto deleteFavouriteRequestDto){
+	public ResponseEntity<Optional<ResponseDto>> deleteFavouritePayee(@RequestBody RequestDto deleteFavouriteRequestDto) throws CustomerAccountNotFoundException{
 		Optional<ResponseDto> deleteResponse = customerService.deleteFavourite(deleteFavouriteRequestDto);
 		if(deleteResponse.isPresent()) {
 		deleteResponse.get().setStatusCode(ApplicationConstants.SUCCESS_CODE);

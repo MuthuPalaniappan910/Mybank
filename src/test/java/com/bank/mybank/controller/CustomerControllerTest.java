@@ -53,4 +53,14 @@ public class CustomerControllerTest {
 		Mockito.when(customerService.addFavourite(addFavouriteRequestDto)).thenReturn(responseFavourite);
 		customerController.addFavouritePayee(addFavouriteRequestDto);
 	}
+	
+	@Test
+	public void testDeleteFavouritePayeeForPositive() throws  CustomerAccountNotFoundException {
+		Mockito.when(customerService.deleteFavourite(addFavouriteRequestDto)).thenReturn(Optional.of(addFavouriteResponseDto));
+		Integer response=customerController.deleteFavouritePayee(addFavouriteRequestDto).getStatusCodeValue();
+		assertEquals(200, response);
+	}
+	
+	
+	
 }

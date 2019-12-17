@@ -41,12 +41,12 @@ public class CustomerServiceImpl implements CustomerService{
 		CustomerAccount customerAccount=customerAccountRepository.findByCustomerId(customer);
 		Optional<CustomerAccount> customerBeneficiaryAccount=customerAccountRepository.findByCustomerAccountNumber(addFavouriteRequestDto.getBeneficiaryAccountNumber());
 		if(!customerBeneficiaryAccount.isPresent()) {
-			throw new CustomerAccountNotFoundException("No customer account found");
+			throw new CustomerAccountNotFoundException(ApplicationConstants.INVALID_CUSTOMER_ACCOUNT);
 		}
 		
 		Optional<CustomerFavouriteAccount> customerFavouriteAccountDetail=customerFavouriteAccountRepository.findByCustomerAccountNumberAndBeneficiaryAccountNumber(customerAccount,customerBeneficiaryAccount.get());
 		if(customerFavouriteAccountDetail.isPresent()) {
-			throw new GeneralException("Beneficiary account already exists in favourite list");
+			throw new GeneralException(ApplicationConstants.BENEFICIARY_ALREADY_EXISTS);
 		}
 		List<CustomerFavouriteAccount> listOffavouriteAccounts=customerFavouriteAccountRepository.findAllByCustomerAccountNumber(customerAccount);
 		if(listOffavouriteAccounts.size()<10) {
@@ -61,11 +61,11 @@ public class CustomerServiceImpl implements CustomerService{
 			ResponseDto addFavouriteResponseDto=new ResponseDto();
 			return Optional.of(addFavouriteResponseDto);
 		}
-		throw new NoAccountListException ("Please delete one of your favourite accounts to add a new beneficiary accounts in your list");
+		throw new NoAccountListException (ApplicationConstants.BENEFICIARY_LIST_EXCEEDS);
 	}
 
 	@Override
-	public Optional<ResponseDto> deleteFavourite(RequestDto deleteRequestDto) {
+	public Optional<ResponseDto> deleteFavourite(RequestDto deleteRequestDto) throws CustomerAccountNotFoundException {
 		Customer customer=customerRepository.findByCustomerId(deleteRequestDto.getCustomerId());
 		CustomerAccount customerAccount=customerAccountRepository.findByCustomerId(customer);
 		Optional<CustomerAccount> customerBeneficiaryAccount=customerAccountRepository.findByCustomerAccountNumber(deleteRequestDto.getBeneficiaryAccountNumber());
@@ -74,11 +74,12 @@ public class CustomerServiceImpl implements CustomerService{
 		if(customerFavouriteAccountDetail.isPresent()) {
 		customerFavouriteAccountDetail.get().setCustomerFavouriteAccountStatus(ApplicationConstants.STATUS_OF_INACTIVE_CODE);
 		customerFavouriteAccountRepository.save(customerFavouriteAccountDetail.get());
-		ResponseDto addFavouriteResponseDto=new ResponseDto();
-		return Optional.of(addFavouriteResponseDto);
+		ResponseDto addDeleteResponseDto=new ResponseDto();
+		return Optional.of(addDeleteResponseDto);
 		}
+		throw new CustomerAccountNotFoundException(ApplicationConstants.INVALID_FAVOURITE_ACCOUNT);
 		}
-		return Optional.ofNullable(null);
+		throw new CustomerAccountNotFoundException(ApplicationConstants.INVALID_CUSTOMER_ACCOUNT);
 	}
 	
 
