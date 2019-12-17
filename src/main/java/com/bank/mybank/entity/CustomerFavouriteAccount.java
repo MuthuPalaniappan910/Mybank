@@ -1,5 +1,7 @@
 package com.bank.mybank.entity;
 
+import java.time.LocalDateTime;
+
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
@@ -30,4 +32,5 @@ public class CustomerFavouriteAccount {
 	private String beneficiaryAccountName;
 	private String ifscCode;
 	private String customerFavouriteAccountStatus;
+	private LocalDateTime accountAddedOn;
 }

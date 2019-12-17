@@ -1,0 +1,14 @@
+package com.bank.mybank.controller;
+
+<<<<<<< HEAD
+public class CustomerControllerTest {
+=======
+<<<<<<< HEAD:src/test/java/com/bank/mybank/controller/BranchControllerTest.java
+
+public class BranchControllerTest {
+=======
+public class CustomerControllerTest {
+>>>>>>> 6bfd38bb927dcd8539d8577846217b89d15bc405:src/test/java/com/bank/mybank/controller/CustomerControllerTest.java
+>>>>>>> 6bfd38bb927dcd8539d8577846217b89d15bc405
+
+}
