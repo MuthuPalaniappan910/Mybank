@@ -28,14 +28,14 @@ import lombok.extern.slf4j.Slf4j;
  */
 @CrossOrigin(allowedHeaders = { "*", "*/" }, origins = { "*", "*/" })
 @RestController
-@RequestMapping
+@RequestMapping("/customers")
 @Slf4j
 public class LoginController {
 
 	@Autowired
 	LoginService loginService;
 
-	@PostMapping
+	
 
 	/**
 	 * This method allows the customer to login to mybank application
@@ -45,6 +45,7 @@ public class LoginController {
 	 * @return LoginResponseDto success/failure message
 	 * @throws GeneralException if the valid credentials are not present
 	 */
+	@PostMapping("/login")
 	public ResponseEntity<Optional<LoginResponseDto>> login(@RequestBody LoginRequestDto loginRequestdto)
 			throws GeneralException {
 		log.info("Entering into login method of LoginController");
