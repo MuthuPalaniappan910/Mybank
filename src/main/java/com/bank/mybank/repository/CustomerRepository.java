@@ -9,5 +9,8 @@ import com.bank.mybank.entity.Customer;
 
 @Repository
 public interface CustomerRepository extends JpaRepository<Customer, Long> {
+
+	Customer findByCustomerId(Long customerId);
+
 	Optional<Customer> findByCustomerIdAndPassword(Long customerid,String password);
 }

@@ -26,8 +26,18 @@ public class BranchController {
 	@Autowired
 	BranchService branchService;
 
+	/**
+	 * This method is used to get the bank details by using ifsc code
+	 * 
+	 * @author Muthu
+	 * @param ifscCode
+	 * @return BranchResponseDto on success returns bank details/on failure returns
+	 *         failure message and status
+	 * @throws IFSCNotFoundException
+	 */
 	@GetMapping
-	public ResponseEntity<BranchResponseDto> getBankDetails(@RequestParam String ifscCode) throws IFSCNotFoundException {
+	public ResponseEntity<BranchResponseDto> getBankDetails(@RequestParam String ifscCode)
+			throws IFSCNotFoundException {
 		log.info("For displaying bank details");
 		BranchResponseDto branchResponseDto = new BranchResponseDto();
 		Optional<BranchResponseDto> response = branchService.getBankDetails(ifscCode);

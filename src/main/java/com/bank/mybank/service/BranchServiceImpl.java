@@ -17,12 +17,22 @@ public class BranchServiceImpl implements BranchService {
 	@Autowired
 	IfscDetailRepository ifscDetailRepository;
 
+	/**
+	 * This method is used to get the bank details by using ifsc code
+	 * 
+	 * @author Muthu
+	 * @param ifscCode
+	 * @return BranchResponseDto on success returns bank details/on failure returns
+	 *         failure message and status
+	 * @throws IFSCNotFoundException
+	 */
+
 	@Override
 	public Optional<BranchResponseDto> getBankDetails(String ifscCode) throws IFSCNotFoundException {
 
 		BranchResponseDto branchResponseDto = new BranchResponseDto();
 		IfscDetail ifscDetail = ifscDetailRepository.findByIfscCode(ifscCode);
-		if(ifscDetail == null) {
+		if (ifscDetail == null) {
 			throw new IFSCNotFoundException(ApplicationConstants.IFSC_FAILUREMESSAGE);
 		}
 		BeanUtils.copyProperties(ifscDetail, branchResponseDto);

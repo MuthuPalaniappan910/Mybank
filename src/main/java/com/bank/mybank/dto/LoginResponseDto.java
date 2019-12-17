@@ -5,7 +5,7 @@ import lombok.Setter;
 
 @Getter
 @Setter
-public class LoginResponsedto {
+public class LoginResponseDto {
 	public Integer statusCode;
 	public String message;
 	public Long customerID;
