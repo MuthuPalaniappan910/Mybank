@@ -48,7 +48,7 @@ public class BranchServiceTest {
 	public void testGetBankDetailsNegative() throws IFSCNotFoundException {
 		Mockito.when(ifscDetailRepository.findByIfscCode("qwe123")).thenReturn(ifscDetail);
 		Optional<BranchResponseDto> expected = branchServiceImpl.getBankDetails("qwe124");
-		String response = ApplicationConstants.IFSC_FAILUREMESSAGE;
+		String response = ApplicationConstants.IFSC_FAILURE_MESSAGE;
 		assertEquals(response, expected);
 	}
 
