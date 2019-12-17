@@ -12,8 +12,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.bank.mybank.constants.ApplicationConstants;
-import com.bank.mybank.dto.LoginRequestdto;
-import com.bank.mybank.dto.LoginResponsedto;
+import com.bank.mybank.dto.LoginRequestDto;
+import com.bank.mybank.dto.LoginResponseDto;
 import com.bank.mybank.exception.GeneralException;
 import com.bank.mybank.service.LoginService;
 
@@ -37,12 +37,12 @@ public class LoginController {
 	LoginService loginService;
 	
 	@PostMapping
-	public ResponseEntity<Optional<LoginResponsedto>> login(@RequestBody LoginRequestdto loginRequestdto)
+	public ResponseEntity<Optional<LoginResponseDto>> login(@RequestBody LoginRequestDto loginRequestdto)
 			throws GeneralException {
 		log.info("Entering into login method of LoginController");
-		Optional<LoginResponsedto> loginResponsedto = loginService.login(loginRequestdto);
+		Optional<LoginResponseDto> loginResponsedto = loginService.login(loginRequestdto);
 		if (!loginResponsedto.isPresent()) {
-			LoginResponsedto loginResponse= new LoginResponsedto();
+			LoginResponseDto loginResponse= new LoginResponseDto();
 			loginResponse.setMessage(ApplicationConstants.LOGIN_ERROR);
 			loginResponse.setStatusCode(HttpStatus.NOT_FOUND.value());
 			return new ResponseEntity<>(Optional.of(loginResponse), HttpStatus.NOT_FOUND);

@@ -5,8 +5,8 @@ import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.bank.mybank.dto.LoginRequestdto;
-import com.bank.mybank.dto.LoginResponsedto;
+import com.bank.mybank.dto.LoginRequestDto;
+import com.bank.mybank.dto.LoginResponseDto;
 import com.bank.mybank.entity.Customer;
 import com.bank.mybank.exception.GeneralException;
 import com.bank.mybank.repository.CustomerRepository;
@@ -27,14 +27,14 @@ public class LoginServiceImpl implements LoginService{
 	 * @return LoginResponsedto
 	 * @exception LOGIN_ERROR
 	 */
-	public Optional<LoginResponsedto> login(LoginRequestdto loginRequestdto) throws GeneralException {
+	public Optional<LoginResponseDto> login(LoginRequestDto loginRequestdto) throws GeneralException {
 		log.info("Entering into login() method of LoginServiceImpl");
 		Optional<Customer> customerResponse=customerRepository.findByCustomerIdAndPassword(loginRequestdto.getCustomerId(), loginRequestdto.getPassword());		
 		if(!customerResponse.isPresent()) {
 			log.error("Exception occured in login() method of LoginServiceImpl");
 			throw new GeneralException("Invalid Credentials");
 		}
-		LoginResponsedto loginResponsedto= new LoginResponsedto();
+		LoginResponseDto loginResponsedto= new LoginResponseDto();
 		loginResponsedto.setCustomerID(customerResponse.get().getCustomerId());
 		return Optional.ofNullable(loginResponsedto);	
 	}
