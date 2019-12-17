@@ -50,4 +50,5 @@ public class BranchServiceTest {
 		String response = ApplicationConstants.IFSC_FAILUREMESSAGE;
 		assertEquals(response, expected);
 	}
+
 }
