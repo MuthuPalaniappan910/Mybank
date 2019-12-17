@@ -9,5 +9,4 @@ public class LoginResponsedto {
 	public Integer statusCode;
 	public String message;
 	public Long customerID;
-	public String roleType;
 }
