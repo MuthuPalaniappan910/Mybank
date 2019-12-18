@@ -12,7 +12,10 @@ import com.bank.mybank.entity.IfscDetail;
 import com.bank.mybank.exception.IFSCNotFoundException;
 import com.bank.mybank.repository.IfscDetailRepository;
 
+import lombok.extern.slf4j.Slf4j;
+
 @Service
+@Slf4j
 public class BranchServiceImpl implements BranchService {
 	@Autowired
 	IfscDetailRepository ifscDetailRepository;
@@ -29,7 +32,7 @@ public class BranchServiceImpl implements BranchService {
 
 	@Override
 	public Optional<BranchResponseDto> getBankDetails(String ifscCode) throws IFSCNotFoundException {
-
+		log.info("entering into get bankDetails");
 		BranchResponseDto branchResponseDto = new BranchResponseDto();
 		IfscDetail ifscDetail = ifscDetailRepository.findByIfscCode(ifscCode);
 		if (ifscDetail == null) {

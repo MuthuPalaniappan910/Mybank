@@ -16,6 +16,12 @@ public class GlobalExceptionHandler {
 		ErrorResponse errorResponse = new ErrorResponse(exception.getMessage());
 		return new ResponseEntity<>(errorResponse, HttpStatus.NOT_FOUND);
 	}
+	
+	@ExceptionHandler(value = BeneficiaryNotFoundException.class)
+	public ResponseEntity<ErrorResponse> handleException(BeneficiaryNotFoundException exception) {
+		ErrorResponse errorResponse = new ErrorResponse(exception.getMessage());
+		return new ResponseEntity<>(errorResponse, HttpStatus.NOT_FOUND);
+	}
 
 	@ExceptionHandler(value = NoAccountListException.class)
 	public ResponseEntity<ErrorResponse> handleException(NoAccountListException exception) {

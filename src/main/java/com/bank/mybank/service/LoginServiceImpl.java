@@ -22,6 +22,7 @@ public class LoginServiceImpl implements LoginService {
 	CustomerRepository customerRepository;
 
 	/**
+	 * @author Chethana
 	 * @Description This method is used for user to login with valid credentials
 	 * @param loginRequestdto
 	 * @return LoginResponsedto
