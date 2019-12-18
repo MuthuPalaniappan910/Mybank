@@ -40,6 +40,8 @@ public class CustomerServiceImpl implements CustomerService {
 	@Autowired
 	CustomerRepository customerRepository;
 
+
+	@Override
 	/**
 	 * This method is used to edit the details of the added favourite account
 	 * 
@@ -171,21 +173,21 @@ public class CustomerServiceImpl implements CustomerService {
 			}
 			throw new BeneficiaryNotFoundException(ApplicationConstants.BENEFICIARY_INVALID);
 		}
-		throw new CustomerAccountNotFoundException(ApplicationConstants.CUSTOMER_NOTFOUND);
+		throw new CustomerAccountNotFoundException(ApplicationConstants.CUSTOMER_NOT_FOUND);
 	}
 
 	/**
+	 * This method is used to remove an account from the favourite list and account status is made inactive. 
+	 * 
 	 * @author Bindu
 	 * @param deleteRequestDto
-	 * @return
+	 * @return ResponseDto
 	 */
 	@Override
 	public Optional<ResponseDto> deleteFavourite(RequestDto deleteRequestDto) {
 		log.info("entering into delete favourite ");
 		Customer customer = customerRepository.findByCustomerId(deleteRequestDto.getCustomerId());
-		System.out.println(customer.getCustomerName());
 		CustomerAccount customerAccount = customerAccountRepository.findByCustomerId(customer);
-		System.out.println(customerAccount.getAccountStatus());
 		Optional<CustomerAccount> customerBeneficiaryAccount = customerAccountRepository
 				.findByCustomerAccountNumber(deleteRequestDto.getBeneficiaryAccountNumber());
 		if (customerBeneficiaryAccount.isPresent()) {

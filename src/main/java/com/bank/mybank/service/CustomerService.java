@@ -13,17 +13,17 @@ import com.bank.mybank.exception.NoAccountListException;
 
 public interface CustomerService {
 
+	Optional<ResponseDto> addFavourite(RequestDto addFavouriteRequestDto)
+			throws NoAccountListException, CustomerAccountNotFoundException, GeneralException;
 
-	Optional<ResponseDto> addFavourite(RequestDto addFavouriteRequestDto) throws NoAccountListException, CustomerAccountNotFoundException, GeneralException;
-	
 	Optional<ResponseDto> deleteFavourite(RequestDto deleteRequestDto);
-	
 
 	Optional<FavouriteBeneficiariesResponseDto> viewFavouriteAccounts(Long customerId) throws GeneralException;
-	
-	Optional<BeneficiaryResponseDto> getBeneficiaryDetails(Long customerId, Long beneficiaryAccountNumber) throws BeneficiaryNotFoundException, CustomerAccountNotFoundException;
 
-	Optional<ResponseDto> editFavourite(RequestDto addFavouriteRequestDto) throws NoAccountListException, CustomerAccountNotFoundException, GeneralException; 
+	Optional<BeneficiaryResponseDto> getBeneficiaryDetails(Long customerId, Long beneficiaryAccountNumber)
+			throws BeneficiaryNotFoundException, CustomerAccountNotFoundException;
 
-	
+	Optional<ResponseDto> editFavourite(RequestDto addFavouriteRequestDto)
+			throws NoAccountListException, CustomerAccountNotFoundException, GeneralException;
+
 }

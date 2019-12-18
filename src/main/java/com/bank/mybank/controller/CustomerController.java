@@ -38,6 +38,8 @@ public class CustomerController {
 	CustomerService customerService;
 
 	/**
+	 * The method adds an account to favourite list of the customer
+	 * 
 	 * 
 	 * @author Bindu
 	 * @param addFavouriteRequestDto
@@ -49,8 +51,9 @@ public class CustomerController {
 	@PostMapping("/beneficiary")
 	public ResponseEntity<Optional<ResponseDto>> addFavouritePayee(@RequestBody RequestDto addFavouriteRequestDto)
 			throws GeneralException, NoAccountListException, CustomerAccountNotFoundException {
+		log.info("Entering into add  favourite payee controller");
 		Optional<ResponseDto> favouriteResponse = customerService.addFavourite(addFavouriteRequestDto);
-		log.info("Adding favourite payee");
+		
 		if (!favouriteResponse.isPresent()) {
 			throw new GeneralException("Unable to add favourite payee");
 		}
@@ -58,6 +61,7 @@ public class CustomerController {
 		favouriteResponse.get().setMessage(ApplicationConstants.BENEFICIARY_ADDED_SUCCESSFULLY);
 		return new ResponseEntity<>(favouriteResponse, HttpStatus.OK);
 	}
+
 	/**
 	 * @author Bindu
 	 * @param deleteFavouriteRequestDto
@@ -65,8 +69,8 @@ public class CustomerController {
 	 */
 
 	@PutMapping("/beneficiary/action")
-	public ResponseEntity<Optional<ResponseDto>> deleteFavouritePayee(@RequestBody RequestDto deleteFavouriteRequestDto)
-		 {
+	public ResponseEntity<Optional<ResponseDto>> deleteFavouritePayee(
+			@RequestBody RequestDto deleteFavouriteRequestDto) {
 		Optional<ResponseDto> deleteResponse = customerService.deleteFavourite(deleteFavouriteRequestDto);
 		log.info("deleting favourite payee");
 		if (deleteResponse.isPresent()) {
@@ -75,6 +79,7 @@ public class CustomerController {
 		}
 		return new ResponseEntity<>(deleteResponse, HttpStatus.OK);
 	}
+
 	/**
 	 * @author Mahesh
 	 * @param customerId
@@ -98,6 +103,7 @@ public class CustomerController {
 		favouriteBeneficiariesResponse.setMessage(ApplicationConstants.FAVOURITE_ACCOUNT_FAILURE_MESSAGE);
 		return new ResponseEntity<>(Optional.of(favouriteBeneficiariesResponse), HttpStatus.OK);
 	}
+
 	/**
 	 * 
 	 * @param addFavouriteRequestDto
@@ -147,7 +153,7 @@ public class CustomerController {
 		log.info("No beneficiary found");
 		BeneficiaryResponseDto beneficaryResponseDto = new BeneficiaryResponseDto();
 		beneficaryResponseDto.setMessage(ApplicationConstants.BENEFICIARY_INVALID);
-		beneficaryResponseDto.setStatusCode(ApplicationConstants.FAILURECODE);
+		beneficaryResponseDto.setStatusCode(ApplicationConstants.FAILURE_CODE);
 		return new ResponseEntity<>(beneficaryResponseDto, HttpStatus.NOT_FOUND);
 	}
 }
