@@ -22,7 +22,10 @@ import com.bank.mybank.exception.CustomerAccountNotFoundException;
 import com.bank.mybank.exception.GeneralException;
 import com.bank.mybank.exception.NoAccountListException;
 import com.bank.mybank.service.CustomerService;
-@RequestMapping("/customers/beneficiary")
+
+
+
+@RequestMapping("/customers")
 @RestController
 @CrossOrigin(allowedHeaders = { "*", "*/" }, origins = { "*", "*/" })
 public class CustomerController {
@@ -30,7 +33,7 @@ public class CustomerController {
 	@Autowired
 	CustomerService customerService;
 	
-	@PostMapping("")
+	@PostMapping("/benefeciary")
 	public ResponseEntity<Optional<ResponseDto>> addFavouritePayee(@RequestBody RequestDto addFavouriteRequestDto)
 			throws GeneralException,NoAccountListException,CustomerAccountNotFoundException {
 		Optional<ResponseDto> favouriteResponse = customerService.addFavourite(addFavouriteRequestDto);
@@ -42,7 +45,7 @@ public class CustomerController {
 		return new ResponseEntity<>(favouriteResponse, HttpStatus.OK);
 	}
 	
-	@PostMapping("/action")
+	@PostMapping("/benefeciary/action")
 	public ResponseEntity<Optional<ResponseDto>> deleteFavouritePayee(@RequestBody RequestDto deleteFavouriteRequestDto) throws CustomerAccountNotFoundException{
 		Optional<ResponseDto> deleteResponse = customerService.deleteFavourite(deleteFavouriteRequestDto);
 		if(deleteResponse.isPresent()) {
@@ -52,7 +55,7 @@ public class CustomerController {
 		return new ResponseEntity<>(deleteResponse, HttpStatus.OK);
 	}
 	
-	@GetMapping("{customerId}/benefeciary")
+	@GetMapping("/{customerId}/benefeciary")
 	public ResponseEntity<Optional<FavouriteBeneficiariesResponseDto>> viewFavouriteAccounts(
 			@PathVariable Long customerId) throws GeneralException {
 		Optional<FavouriteBeneficiariesResponseDto> favouriteBeneficiariesResponseDto = customerService
@@ -71,7 +74,7 @@ public class CustomerController {
 	@PutMapping("/beneficiary")
 	public ResponseEntity<Optional<ResponseDto>> editFavouritePayee(@RequestBody RequestDto addFavouriteRequestDto)
 			throws GeneralException,NoAccountListException,CustomerAccountNotFoundException {
-		Optional<ResponseDto> favouriteListResponse = customerService.addFavourite(addFavouriteRequestDto);
+		Optional<ResponseDto> favouriteListResponse = customerService.editFavourite(addFavouriteRequestDto);
 		if (!favouriteListResponse.isPresent()) {
 			throw new GeneralException("Unable to edit favourite payee");
 		}

@@ -15,6 +15,9 @@ public interface CustomerService {
 	
 	Optional<ResponseDto> deleteFavourite(RequestDto deleteRequestDto) throws CustomerAccountNotFoundException ;
 
-	Optional<FavouriteBeneficiariesResponseDto> viewFavouriteAccounts(Long customerId) throws GeneralException; 
+	Optional<FavouriteBeneficiariesResponseDto> viewFavouriteAccounts(Long customerId) throws GeneralException;
+
+	Optional<ResponseDto> editFavourite(RequestDto addFavouriteRequestDto)
+			throws NoAccountListException, CustomerAccountNotFoundException, GeneralException; 
 	
 }

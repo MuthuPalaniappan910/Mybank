@@ -9,10 +9,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.bank.mybank.constants.ApplicationConstants;
-import com.bank.mybank.dto.RequestDto;
-import com.bank.mybank.dto.ResponseDto;
 import com.bank.mybank.dto.CustomerFavouriteAccountResponse;
 import com.bank.mybank.dto.FavouriteBeneficiariesResponseDto;
+import com.bank.mybank.dto.RequestDto;
+import com.bank.mybank.dto.ResponseDto;
 import com.bank.mybank.entity.Customer;
 import com.bank.mybank.entity.CustomerAccount;
 import com.bank.mybank.entity.CustomerFavouriteAccount;
@@ -35,8 +35,10 @@ public class CustomerServiceImpl implements CustomerService {
 	@Autowired
 	CustomerRepository customerRepository;
 
+	private Object favouriteBeneficiariesResponseDto;
+
 	@Override
-	public Optional<ResponseDto> addFavourite(RequestDto addFavouriteRequestDto)
+	public Optional<ResponseDto> editFavourite(RequestDto addFavouriteRequestDto)
 			throws NoAccountListException, CustomerAccountNotFoundException, GeneralException {
 		Customer customer = customerRepository.findByCustomerId(addFavouriteRequestDto.getCustomerId());
 		CustomerAccount customerAccount = customerAccountRepository.findByCustomerId(customer);
@@ -49,34 +51,13 @@ public class CustomerServiceImpl implements CustomerService {
 		Optional<CustomerFavouriteAccount> customerFavouriteAccountDetail = customerFavouriteAccountRepository
 				.findByCustomerAccountNumberAndBeneficiaryAccountNumber(customerAccount,
 						customerBeneficiaryAccount.get());
-		if (customerFavouriteAccountDetail.isPresent() && addFavouriteRequestDto.getActionType().equalsIgnoreCase("edit")) {
+		if (customerFavouriteAccountDetail.isPresent()) {
 
 			customerFavouriteAccountDetail.get()
 					.setBeneficiaryAccountName(addFavouriteRequestDto.getBeneficiaryAccountName());
 			customerFavouriteAccountDetail.get().setIfscCode(addFavouriteRequestDto.getIfscCode());
 			customerFavouriteAccountDetail.get().setAccountAddedOn(LocalDateTime.now());
 			customerFavouriteAccountRepository.save(customerFavouriteAccountDetail.get());
-		} else {
-			throw new GeneralException(ApplicationConstants.BENEFICIARY_ALREADY_EXISTS);
-		}
-
-		if (!addFavouriteRequestDto.getActionType().equalsIgnoreCase("edit")) {
-			List<CustomerFavouriteAccount> listOffavouriteAccounts = customerFavouriteAccountRepository
-					.findAllByCustomerAccountNumber(customerAccount);
-			if (listOffavouriteAccounts.size() < 10) {
-				CustomerFavouriteAccount customerFavouriteAccount = new CustomerFavouriteAccount();
-				customerFavouriteAccount.setCustomerAccountNumber(customerAccount);
-				customerFavouriteAccount.setBeneficiaryAccountName(addFavouriteRequestDto.getBeneficiaryAccountName());
-				customerFavouriteAccount.setBeneficiaryAccountNumber(customerBeneficiaryAccount.get());
-				customerFavouriteAccount
-						.setCustomerFavouriteAccountStatus(ApplicationConstants.STATUS_OF_ACTIVE_ACCOUNT);
-				customerFavouriteAccount.setIfscCode(addFavouriteRequestDto.getIfscCode());
-				customerFavouriteAccount.setAccountAddedOn(LocalDateTime.now());
-				customerFavouriteAccountRepository.save(customerFavouriteAccount);
-
-			} else {
-				throw new NoAccountListException (ApplicationConstants.BENEFICIARY_LIST_EXCEEDS);
-			}
 		}
 		ResponseDto addFavouriteResponseDto = new ResponseDto();
 		return Optional.of(addFavouriteResponseDto);
@@ -104,7 +85,7 @@ public class CustomerServiceImpl implements CustomerService {
 	
 
 	public Optional<FavouriteBeneficiariesResponseDto> viewFavouriteAccounts(Long customerId) throws GeneralException {
-		FavouriteBeneficiariesResponseDto favouriteBeneficiariesResponseDto = new FavouriteBeneficiariesResponseDto();
+		FavouriteBeneficiariesResponseDto favouriteBeneficiariesResponseDto= new FavouriteBeneficiariesResponseDto(); 
 
 		List<CustomerFavouriteAccountResponse> customerFavouriteAccountResponseList = new ArrayList<>();
 
@@ -123,9 +104,12 @@ public class CustomerServiceImpl implements CustomerService {
 			Optional<List<CustomerFavouriteAccount>> customerFavouriteAccountOptional = customerFavouriteAccountRepository
 					.findByCustomerAccountNumberAndCustomerFavouriteAccountStatusOrderByAccountAddedOnDesc(
 							finalListCustomer, "active");
-			if (!customerFavouriteAccountOptional.isPresent()) {
-				throw new GeneralException("Error in CustomerFavouriteAccount");
+			if(!customerFavouriteAccountOptional.isPresent()) {
+				favouriteBeneficiariesResponseDto.setFavouritesList(customerFavouriteAccountResponseList);
+				return Optional.of(favouriteBeneficiariesResponseDto);
+			
 			}
+
 			customerFavouriteAccountOptional.get().forEach(customerFavouriteAccountIndex -> {
 				CustomerFavouriteAccountResponse customerFavouriteAccountResponse = new CustomerFavouriteAccountResponse();
 
@@ -137,10 +121,22 @@ public class CustomerServiceImpl implements CustomerService {
 				customerFavouriteAccountResponseList.add(customerFavouriteAccountResponse);
 
 			});
+			
+			
 		}
 
 		favouriteBeneficiariesResponseDto.setFavouritesList(customerFavouriteAccountResponseList);
 		return Optional.of(favouriteBeneficiariesResponseDto);
 	}
+
+
+
+	@Override
+	public Optional<ResponseDto> addFavourite(RequestDto addFavouriteRequestDto)
+			throws NoAccountListException, CustomerAccountNotFoundException, GeneralException {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
 
 }
