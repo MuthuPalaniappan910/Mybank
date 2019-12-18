@@ -58,6 +58,7 @@ public class CustomerController {
 		favouriteResponse.get().setMessage(ApplicationConstants.BENEFICIARY_ADDED_SUCCESSFULLY);
 		return new ResponseEntity<>(favouriteResponse, HttpStatus.OK);
 	}
+
 	/**
 	 * @author Bindu
 	 * @param deleteFavouriteRequestDto
@@ -65,8 +66,8 @@ public class CustomerController {
 	 */
 
 	@PutMapping("/beneficiary/action")
-	public ResponseEntity<Optional<ResponseDto>> deleteFavouritePayee(@RequestBody RequestDto deleteFavouriteRequestDto)
-		 {
+	public ResponseEntity<Optional<ResponseDto>> deleteFavouritePayee(
+			@RequestBody RequestDto deleteFavouriteRequestDto) {
 		Optional<ResponseDto> deleteResponse = customerService.deleteFavourite(deleteFavouriteRequestDto);
 		log.info("deleting favourite payee");
 		if (deleteResponse.isPresent()) {
@@ -75,6 +76,7 @@ public class CustomerController {
 		}
 		return new ResponseEntity<>(deleteResponse, HttpStatus.OK);
 	}
+
 	/**
 	 * @author Mahesh
 	 * @param customerId
@@ -98,6 +100,7 @@ public class CustomerController {
 		favouriteBeneficiariesResponse.setMessage(ApplicationConstants.FAVOURITE_ACCOUNT_FAILURE_MESSAGE);
 		return new ResponseEntity<>(Optional.of(favouriteBeneficiariesResponse), HttpStatus.OK);
 	}
+
 	/**
 	 * 
 	 * @param addFavouriteRequestDto

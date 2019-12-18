@@ -40,6 +40,8 @@ public class CustomerServiceImpl implements CustomerService {
 	@Autowired
 	CustomerRepository customerRepository;
 
+
+	@Override
 	/**
 	 * This method is used to edit the details of the added favourite account
 	 * 
@@ -233,9 +235,12 @@ public class CustomerServiceImpl implements CustomerService {
 			Optional<List<CustomerFavouriteAccount>> customerFavouriteAccountOptional = customerFavouriteAccountRepository
 					.findByCustomerAccountNumberAndCustomerFavouriteAccountStatusOrderByAccountAddedOnDesc(
 							finalListCustomer, "active");
-			if (!customerFavouriteAccountOptional.isPresent()) {
-				throw new GeneralException("Error in CustomerFavouriteAccount");
+			if(!customerFavouriteAccountOptional.isPresent()) {
+				favouriteBeneficiariesResponseDto.setFavouritesList(customerFavouriteAccountResponseList);
+				return Optional.of(favouriteBeneficiariesResponseDto);
+			
 			}
+
 			customerFavouriteAccountOptional.get().forEach(customerFavouriteAccountIndex -> {
 				CustomerFavouriteAccountResponse customerFavouriteAccountResponse = new CustomerFavouriteAccountResponse();
 
@@ -247,6 +252,8 @@ public class CustomerServiceImpl implements CustomerService {
 				customerFavouriteAccountResponseList.add(customerFavouriteAccountResponse);
 
 			});
+			
+			
 		}
 
 		favouriteBeneficiariesResponseDto.setFavouritesList(customerFavouriteAccountResponseList);
