@@ -9,16 +9,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.bank.mybank.constants.ApplicationConstants;
-<<<<<<< HEAD
-import com.bank.mybank.dto.AddFavouriteRequestDto;
-import com.bank.mybank.dto.AddFavouriteResponseDto;
 import com.bank.mybank.dto.BeneficiaryResponseDto;
-=======
-import com.bank.mybank.dto.RequestDto;
-import com.bank.mybank.dto.ResponseDto;
 import com.bank.mybank.dto.CustomerFavouriteAccountResponse;
 import com.bank.mybank.dto.FavouriteBeneficiariesResponseDto;
->>>>>>> eb2feb50324d7713749d0e7af89fa04b35b74d42
+import com.bank.mybank.dto.RequestDto;
+import com.bank.mybank.dto.ResponseDto;
 import com.bank.mybank.entity.Customer;
 import com.bank.mybank.entity.CustomerAccount;
 import com.bank.mybank.entity.CustomerFavouriteAccount;
@@ -30,7 +25,10 @@ import com.bank.mybank.repository.CustomerAccountRepository;
 import com.bank.mybank.repository.CustomerFavouriteAccountRepository;
 import com.bank.mybank.repository.CustomerRepository;
 
+import lombok.extern.slf4j.Slf4j;
+
 @Service
+@Slf4j
 public class CustomerServiceImpl implements CustomerService {
 
 	@Autowired
@@ -42,37 +40,78 @@ public class CustomerServiceImpl implements CustomerService {
 	@Autowired
 	CustomerRepository customerRepository;
 
-	@Override
-<<<<<<< HEAD
-	public Optional<AddFavouriteResponseDto> addFavourite(AddFavouriteRequestDto addFavouriteRequestDto)
+	/**
+	 * This method is used to edit the details of the added favourite account
+	 * 
+	 * @author Chethana
+	 * @param addFavouriteRequestDto
+	 * @return
+	 * @throws NoAccountListException
+	 * @throws CustomerAccountNotFoundException
+	 * @throws GeneralException
+	 */
+
+	public Optional<ResponseDto> editFavourite(RequestDto addFavouriteRequestDto)
 			throws NoAccountListException, CustomerAccountNotFoundException, GeneralException {
+		log.info("entering into edit favourite payee");
 		Customer customer = customerRepository.findByCustomerId(addFavouriteRequestDto.getCustomerId());
 		CustomerAccount customerAccount = customerAccountRepository.findByCustomerId(customer);
 		Optional<CustomerAccount> customerBeneficiaryAccount = customerAccountRepository
 				.findByCustomerAccountNumber(addFavouriteRequestDto.getBeneficiaryAccountNumber());
 		if (!customerBeneficiaryAccount.isPresent()) {
-			throw new CustomerAccountNotFoundException("No customer account found");
+			throw new GeneralException(ApplicationConstants.BENEFICIARY_ALREADY_EXISTS);
 		}
 
 		Optional<CustomerFavouriteAccount> customerFavouriteAccountDetail = customerFavouriteAccountRepository
 				.findByCustomerAccountNumberAndBeneficiaryAccountNumber(customerAccount,
 						customerBeneficiaryAccount.get());
 		if (customerFavouriteAccountDetail.isPresent()) {
-			throw new GeneralException("Beneficiary account already exists in favourite list");
-=======
-	public Optional<ResponseDto> addFavourite(RequestDto addFavouriteRequestDto) throws NoAccountListException,CustomerAccountNotFoundException, GeneralException {
-		Customer customer=customerRepository.findByCustomerId(addFavouriteRequestDto.getCustomerId());
-		CustomerAccount customerAccount=customerAccountRepository.findByCustomerId(customer);
-		Optional<CustomerAccount> customerBeneficiaryAccount=customerAccountRepository.findByCustomerAccountNumber(addFavouriteRequestDto.getBeneficiaryAccountNumber());
-		if(!customerBeneficiaryAccount.isPresent()) {
-			throw new CustomerAccountNotFoundException(ApplicationConstants.INVALID_CUSTOMER_ACCOUNT);
+
+			customerFavouriteAccountDetail.get()
+					.setBeneficiaryAccountName(addFavouriteRequestDto.getBeneficiaryAccountName());
+			customerFavouriteAccountDetail.get().setIfscCode(addFavouriteRequestDto.getIfscCode());
+			customerFavouriteAccountDetail.get().setAccountAddedOn(LocalDateTime.now());
+			customerFavouriteAccountRepository.save(customerFavouriteAccountDetail.get());
 		}
-		
-		Optional<CustomerFavouriteAccount> customerFavouriteAccountDetail=customerFavouriteAccountRepository.findByCustomerAccountNumberAndBeneficiaryAccountNumber(customerAccount,customerBeneficiaryAccount.get());
-		if(customerFavouriteAccountDetail.isPresent()) {
+		ResponseDto addFavouriteResponseDto = new ResponseDto();
+		return Optional.of(addFavouriteResponseDto);
+	}
+
+	/**
+	 * This method is used to add the details of favourite account
+	 * 
+	 * @author Bindu
+	 * @param addFavouriteRequestDto
+	 * @return
+	 * @throws NoAccountListException
+	 * @throws CustomerAccountNotFoundException
+	 * @throws GeneralException
+	 */
+	@Override
+	public Optional<ResponseDto> addFavourite(RequestDto addFavouriteRequestDto)
+			throws NoAccountListException, CustomerAccountNotFoundException, GeneralException {
+		log.info("entering into add favourite payee");
+		Customer customer = customerRepository.findByCustomerId(addFavouriteRequestDto.getCustomerId());
+		CustomerAccount customerAccount = customerAccountRepository.findByCustomerId(customer);
+
+		Optional<CustomerAccount> customerBeneficiaryAccount = customerAccountRepository
+				.findByCustomerAccountNumber(addFavouriteRequestDto.getBeneficiaryAccountNumber());
+		if (!customerBeneficiaryAccount.isPresent()) {
 			throw new GeneralException(ApplicationConstants.BENEFICIARY_ALREADY_EXISTS);
->>>>>>> eb2feb50324d7713749d0e7af89fa04b35b74d42
 		}
+
+		Optional<CustomerFavouriteAccount> customerFavouriteAccountDetail = customerFavouriteAccountRepository
+				.findByCustomerAccountNumberAndBeneficiaryAccountNumber(customerAccount,
+						customerBeneficiaryAccount.get());
+		Long existingAccount = customerAccount.getCustomerAccountNumber();
+		Long givenAccount = customerAccount.getCustomerAccountNumber();
+		if (existingAccount.equals(givenAccount)) {
+			throw new GeneralException("Cannot add your account as a beneficiary account");
+		}
+		if (customerFavouriteAccountDetail.isPresent()) {
+			throw new GeneralException(ApplicationConstants.BENEFICIARY_ALREADY_EXISTS);
+		}
+
 		List<CustomerFavouriteAccount> listOffavouriteAccounts = customerFavouriteAccountRepository
 				.findAllByCustomerAccountNumber(customerAccount);
 		if (listOffavouriteAccounts.size() < 10) {
@@ -84,12 +123,11 @@ public class CustomerServiceImpl implements CustomerService {
 			customerFavouriteAccount.setIfscCode(addFavouriteRequestDto.getIfscCode());
 			customerFavouriteAccount.setAccountAddedOn(LocalDateTime.now());
 			customerFavouriteAccountRepository.save(customerFavouriteAccount);
-<<<<<<< HEAD
-			AddFavouriteResponseDto addFavouriteResponseDto = new AddFavouriteResponseDto();
+			ResponseDto addFavouriteResponseDto = new ResponseDto();
 			return Optional.of(addFavouriteResponseDto);
 		}
-		throw new NoAccountListException(
-				"Please delete one of your favourite accounts to add a new beneficiary accounts in your list");
+
+		throw new NoAccountListException(ApplicationConstants.BENEFICIARY_LIST_EXCEEDS);
 	}
 
 	/**
@@ -109,6 +147,7 @@ public class CustomerServiceImpl implements CustomerService {
 	@Override
 	public Optional<BeneficiaryResponseDto> getBeneficiaryDetails(Long customerId, Long beneficiaryAccountNumber)
 			throws BeneficiaryNotFoundException, CustomerAccountNotFoundException {
+		log.info("entering into get beneficiaryDetails");
 		Customer customer = customerRepository.findByCustomerId(customerId);
 		if (customer != null) {
 			BeneficiaryResponseDto beneficiaryResponseDto = new BeneficiaryResponseDto();
@@ -132,65 +171,86 @@ public class CustomerServiceImpl implements CustomerService {
 			}
 			throw new BeneficiaryNotFoundException(ApplicationConstants.BENEFICIARY_INVALID);
 		}
-		throw new CustomerAccountNotFoundException("No customer account found");
-=======
-			ResponseDto addFavouriteResponseDto=new ResponseDto();
-			return Optional.of(addFavouriteResponseDto);
-		}
-		throw new NoAccountListException (ApplicationConstants.BENEFICIARY_LIST_EXCEEDS);
->>>>>>> eb2feb50324d7713749d0e7af89fa04b35b74d42
+		throw new CustomerAccountNotFoundException(ApplicationConstants.CUSTOMER_NOTFOUND);
 	}
 
+	/**
+	 * @author Bindu
+	 * @param deleteRequestDto
+	 * @return
+	 */
 	@Override
-	public Optional<ResponseDto> deleteFavourite(RequestDto deleteRequestDto) throws CustomerAccountNotFoundException {
-		Customer customer=customerRepository.findByCustomerId(deleteRequestDto.getCustomerId());
-		CustomerAccount customerAccount=customerAccountRepository.findByCustomerId(customer);
-		Optional<CustomerAccount> customerBeneficiaryAccount=customerAccountRepository.findByCustomerAccountNumber(deleteRequestDto.getBeneficiaryAccountNumber());
-		if(customerBeneficiaryAccount.isPresent()) {
-		Optional<CustomerFavouriteAccount> customerFavouriteAccountDetail=customerFavouriteAccountRepository.findByCustomerAccountNumberAndBeneficiaryAccountNumber(customerAccount,customerBeneficiaryAccount.get());
-		if(customerFavouriteAccountDetail.isPresent()) {
-		customerFavouriteAccountDetail.get().setCustomerFavouriteAccountStatus(ApplicationConstants.STATUS_OF_INACTIVE_CODE);
-		customerFavouriteAccountRepository.save(customerFavouriteAccountDetail.get());
-		ResponseDto addDeleteResponseDto=new ResponseDto();
-		return Optional.of(addDeleteResponseDto);
-		}
-		throw new CustomerAccountNotFoundException(ApplicationConstants.INVALID_FAVOURITE_ACCOUNT);
-		}
-		throw new CustomerAccountNotFoundException(ApplicationConstants.INVALID_CUSTOMER_ACCOUNT);
-	}
-	
+	public Optional<ResponseDto> deleteFavourite(RequestDto deleteRequestDto) {
+		log.info("entering into delete favourite ");
+		Customer customer = customerRepository.findByCustomerId(deleteRequestDto.getCustomerId());
+		System.out.println(customer.getCustomerName());
+		CustomerAccount customerAccount = customerAccountRepository.findByCustomerId(customer);
+		System.out.println(customerAccount.getAccountStatus());
+		Optional<CustomerAccount> customerBeneficiaryAccount = customerAccountRepository
+				.findByCustomerAccountNumber(deleteRequestDto.getBeneficiaryAccountNumber());
+		if (customerBeneficiaryAccount.isPresent()) {
+			Optional<CustomerFavouriteAccount> customerFavouriteAccountDetail = customerFavouriteAccountRepository
+					.findByCustomerAccountNumberAndBeneficiaryAccountNumber(customerAccount,
+							customerBeneficiaryAccount.get());
+			if (customerFavouriteAccountDetail.isPresent()) {
+				customerFavouriteAccountDetail.get()
+						.setCustomerFavouriteAccountStatus(ApplicationConstants.STATUS_OF_INACTIVE_CODE);
+				customerFavouriteAccountRepository.save(customerFavouriteAccountDetail.get());
 
+			}
+		}
+		ResponseDto addDeleteResponseDto = new ResponseDto();
+		return Optional.of(addDeleteResponseDto);
+	}
+
+	/**
+	 * @author Mahesh
+	 * @param customerId
+	 * @return
+	 * @throws GeneralException
+	 */
 	public Optional<FavouriteBeneficiariesResponseDto> viewFavouriteAccounts(Long customerId) throws GeneralException {
+		log.info("entering into view favourite account");
 		FavouriteBeneficiariesResponseDto favouriteBeneficiariesResponseDto = new FavouriteBeneficiariesResponseDto();
-		
-		
-		List<CustomerFavouriteAccountResponse> customerFavouriteAccountResponseList= new ArrayList<>();
-		CustomerFavouriteAccountResponse customerFavouriteAccountResponse= new CustomerFavouriteAccountResponse();
-		
+
+		List<CustomerFavouriteAccountResponse> customerFavouriteAccountResponseList = new ArrayList<>();
+
 		Optional<Customer> customer = customerRepository.findById(customerId);
-		
-		if(!customer.isPresent()) {
+
+		if (!customer.isPresent()) {
 			throw new GeneralException(ApplicationConstants.INVALID_CUSTOMER);
 		}
-		
+
 		Optional<List<CustomerAccount>> customerAccountList = customerAccountRepository.findByCustomerId(customer);
-		if(!customerAccountList.isPresent()) {
+		if (!customerAccountList.isPresent()) {
 			throw new GeneralException(ApplicationConstants.INVALID_ACCOUNT_NUMBER);
 		}
-		for (CustomerAccount finalListCustomer : customerAccountList.get()) {
-			
-			Optional<CustomerFavouriteAccount> customerFavouriteAccountOptional=customerFavouriteAccountRepository.findByCustomerAccountNumberAndCustomerFavouriteAccountStatusOrderByAccountAddedOnDesc(finalListCustomer,"active");
-			
-					if(!customerFavouriteAccountOptional.isPresent()) {
-						throw new GeneralException("Error");
-					}					
-					customerFavouriteAccountResponse.setBeneficiaryAccountName(customerFavouriteAccountOptional.get().getBeneficiaryAccountName());
-					customerFavouriteAccountResponse.setIfscCode(customerFavouriteAccountOptional.get().getIfscCode());
-					customerFavouriteAccountResponse.setBeneficiaryAccountNumber(customerFavouriteAccountOptional.get().getBeneficiaryAccountNumber().getCustomerAccountNumber());
-					customerFavouriteAccountResponseList.add(customerFavouriteAccountResponse);					
+		if (customerAccountList.get().isEmpty()) {
+			throw new GeneralException("No favourites added");
 		}
-		
+		for (CustomerAccount finalListCustomer : customerAccountList.get()) {
+
+			Optional<List<CustomerFavouriteAccount>> customerFavouriteAccountOptional = customerFavouriteAccountRepository
+					.findByCustomerAccountNumberAndCustomerFavouriteAccountStatusOrderByAccountAddedOnDesc(
+							finalListCustomer, "active");
+			if (!customerFavouriteAccountOptional.isPresent()) {
+				throw new GeneralException("Error in CustomerFavouriteAccount");
+			}
+			customerFavouriteAccountOptional.get().forEach(customerFavouriteAccountIndex -> {
+				CustomerFavouriteAccountResponse customerFavouriteAccountResponse = new CustomerFavouriteAccountResponse();
+
+				customerFavouriteAccountResponse
+						.setBeneficiaryAccountName(customerFavouriteAccountIndex.getBeneficiaryAccountName());
+				customerFavouriteAccountResponse.setIfscCode(customerFavouriteAccountIndex.getIfscCode());
+				customerFavouriteAccountResponse.setBeneficiaryAccountNumber(
+						customerFavouriteAccountIndex.getBeneficiaryAccountNumber().getCustomerAccountNumber());
+				customerFavouriteAccountResponseList.add(customerFavouriteAccountResponse);
+
+			});
+		}
+
 		favouriteBeneficiariesResponseDto.setFavouritesList(customerFavouriteAccountResponseList);
 		return Optional.of(favouriteBeneficiariesResponseDto);
 	}
+
 }

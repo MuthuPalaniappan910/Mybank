@@ -45,4 +45,6 @@ public class ApplicationConstants {
 	public static final String INVALID_CUSTOMER_ACCOUNT = "The customer account does not exist";
 
 	public static final String INVALID_FAVOURITE_ACCOUNT = "No favourite account found";
+	
+	public static final String CUSTOMER_NOTFOUND="No customer account found";
 }
