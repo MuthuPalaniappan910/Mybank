@@ -1,5 +1,6 @@
 package com.bank.mybank.controller;
 
+import static org.junit.Assert.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import java.util.Optional;
@@ -10,9 +11,11 @@ import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
+import org.springframework.http.ResponseEntity;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import com.bank.mybank.dto.BeneficiaryResponseDto;
+import com.bank.mybank.dto.FavouriteBeneficiariesResponseDto;
 import com.bank.mybank.dto.RequestDto;
 import com.bank.mybank.dto.ResponseDto;
 import com.bank.mybank.exception.BeneficiaryNotFoundException;
@@ -32,6 +35,7 @@ public class CustomerControllerTest {
 
 	RequestDto addFavouriteRequestDto = null;
 	ResponseDto addFavouriteResponseDto = null;
+	FavouriteBeneficiariesResponseDto favouriteBeneficiariesResponseDto = null;
 
 	@Before
 	public void before() {
@@ -42,6 +46,10 @@ public class CustomerControllerTest {
 		addFavouriteRequestDto.setIfscCode("hdfc100");
 
 		addFavouriteResponseDto = new ResponseDto();
+
+		favouriteBeneficiariesResponseDto = new FavouriteBeneficiariesResponseDto();
+		favouriteBeneficiariesResponseDto.setMessage("success");
+		favouriteBeneficiariesResponseDto.setStatusCode(200);
 	}
 
 	@Test
@@ -51,21 +59,23 @@ public class CustomerControllerTest {
 		Integer response = customerController.deleteFavouritePayee(addFavouriteRequestDto).getStatusCodeValue();
 		assertEquals(200, response);
 	}
-	
+
 	@Test
-	public void testAddFavouritePayeeForPositive() throws NoAccountListException, CustomerAccountNotFoundException, GeneralException {
-		Mockito.when(customerService.addFavourite(addFavouriteRequestDto)).thenReturn(Optional.of(addFavouriteResponseDto));
-		Integer response=customerController.addFavouritePayee(addFavouriteRequestDto).getStatusCodeValue();
+	public void testAddFavouritePayeeForPositive()
+			throws NoAccountListException, CustomerAccountNotFoundException, GeneralException {
+		Mockito.when(customerService.addFavourite(addFavouriteRequestDto))
+				.thenReturn(Optional.of(addFavouriteResponseDto));
+		Integer response = customerController.addFavouritePayee(addFavouriteRequestDto).getStatusCodeValue();
 		assertEquals(200, response);
 	}
-	
+
 	@Test(expected = GeneralException.class)
-	public void testAddFavouritePayeeForNegative() throws NoAccountListException, CustomerAccountNotFoundException, GeneralException {
-		Optional<ResponseDto> responseFavourite=Optional.ofNullable(null);
+	public void testAddFavouritePayeeForNegative()
+			throws NoAccountListException, CustomerAccountNotFoundException, GeneralException {
+		Optional<ResponseDto> responseFavourite = Optional.ofNullable(null);
 		Mockito.when(customerService.addFavourite(addFavouriteRequestDto)).thenReturn(responseFavourite);
 		customerController.addFavouritePayee(addFavouriteRequestDto);
 	}
-	
 
 	@Test
 	public void testGetBeneficiaryDetailsPositive()
@@ -92,4 +102,29 @@ public class CustomerControllerTest {
 		assertEquals(404, expected);
 	}
 
+	@Test
+	public void viewFavouriteAccountsFor() throws GeneralException {
+		Mockito.when(customerService.viewFavouriteAccounts(1L))
+				.thenReturn(Optional.of(favouriteBeneficiariesResponseDto));
+		ResponseEntity<Optional<FavouriteBeneficiariesResponseDto>> response = customerController
+				.viewFavouriteAccounts(101L);
+		assertNotNull(response);
+	}
+
+	@Test
+	public void testEditFavouritePayeeForPositive() throws NoAccountListException, CustomerAccountNotFoundException, GeneralException {
+		Mockito.when(customerService.editFavourite(addFavouriteRequestDto))
+		.thenReturn(Optional.of(addFavouriteResponseDto));
+		Integer response = customerController.editFavouritePayee(addFavouriteRequestDto).getStatusCodeValue();
+		assertEquals(200, response);
+	}
+	
+	@Test(expected = GeneralException.class)
+	public void testEditFavouritePayeeForNegative() throws NoAccountListException, CustomerAccountNotFoundException, GeneralException {
+		Optional<ResponseDto> responseFavourite = Optional.ofNullable(null);
+		Mockito.when(customerService.editFavourite(addFavouriteRequestDto))
+		.thenReturn(responseFavourite);
+		customerController.editFavouritePayee(addFavouriteRequestDto);
+	}
+	
 }

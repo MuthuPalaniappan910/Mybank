@@ -38,6 +38,8 @@ public class CustomerController {
 	CustomerService customerService;
 
 	/**
+	 * The method adds an account to favourite list of the customer
+	 * 
 	 * 
 	 * @author Bindu
 	 * @param addFavouriteRequestDto
@@ -49,8 +51,9 @@ public class CustomerController {
 	@PostMapping("/beneficiary")
 	public ResponseEntity<Optional<ResponseDto>> addFavouritePayee(@RequestBody RequestDto addFavouriteRequestDto)
 			throws GeneralException, NoAccountListException, CustomerAccountNotFoundException {
+		log.info("Entering into add  favourite payee controller");
 		Optional<ResponseDto> favouriteResponse = customerService.addFavourite(addFavouriteRequestDto);
-		log.info("Adding favourite payee");
+		
 		if (!favouriteResponse.isPresent()) {
 			throw new GeneralException("Unable to add favourite payee");
 		}
