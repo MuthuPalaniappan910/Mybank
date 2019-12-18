@@ -104,7 +104,7 @@ public class CustomerServiceImpl implements CustomerService {
 				.findByCustomerAccountNumberAndBeneficiaryAccountNumber(customerAccount,
 						customerBeneficiaryAccount.get());
 		Long existingAccount = customerAccount.getCustomerAccountNumber();
-		Long givenAccount = customerAccount.getCustomerAccountNumber();
+		Long givenAccount = addFavouriteRequestDto.getBeneficiaryAccountNumber();
 		if (existingAccount.equals(givenAccount)) {
 			throw new GeneralException("Cannot add your account as a beneficiary account");
 		}
@@ -233,9 +233,12 @@ public class CustomerServiceImpl implements CustomerService {
 			Optional<List<CustomerFavouriteAccount>> customerFavouriteAccountOptional = customerFavouriteAccountRepository
 					.findByCustomerAccountNumberAndCustomerFavouriteAccountStatusOrderByAccountAddedOnDesc(
 							finalListCustomer, "active");
-			if (!customerFavouriteAccountOptional.isPresent()) {
-				throw new GeneralException("Error in CustomerFavouriteAccount");
+			if(!customerFavouriteAccountOptional.isPresent()) {
+				favouriteBeneficiariesResponseDto.setFavouritesList(customerFavouriteAccountResponseList);
+				return Optional.of(favouriteBeneficiariesResponseDto);
+			
 			}
+
 			customerFavouriteAccountOptional.get().forEach(customerFavouriteAccountIndex -> {
 				CustomerFavouriteAccountResponse customerFavouriteAccountResponse = new CustomerFavouriteAccountResponse();
 
@@ -247,10 +250,13 @@ public class CustomerServiceImpl implements CustomerService {
 				customerFavouriteAccountResponseList.add(customerFavouriteAccountResponse);
 
 			});
+			
+			
 		}
 
 		favouriteBeneficiariesResponseDto.setFavouritesList(customerFavouriteAccountResponseList);
 		return Optional.of(favouriteBeneficiariesResponseDto);
 	}
+	
 
 }
