@@ -104,7 +104,7 @@ public class CustomerServiceImpl implements CustomerService {
 				.findByCustomerAccountNumberAndBeneficiaryAccountNumber(customerAccount,
 						customerBeneficiaryAccount.get());
 		Long existingAccount = customerAccount.getCustomerAccountNumber();
-		Long givenAccount = customerAccount.getCustomerAccountNumber();
+		Long givenAccount = addFavouriteRequestDto.getBeneficiaryAccountNumber();
 		if (existingAccount.equals(givenAccount)) {
 			throw new GeneralException("Cannot add your account as a beneficiary account");
 		}
@@ -175,17 +175,17 @@ public class CustomerServiceImpl implements CustomerService {
 	}
 
 	/**
+	 * This method is used to remove an account from the favourite list and account status is made inactive. 
+	 * 
 	 * @author Bindu
 	 * @param deleteRequestDto
-	 * @return
+	 * @return ResponseDto
 	 */
 	@Override
 	public Optional<ResponseDto> deleteFavourite(RequestDto deleteRequestDto) {
 		log.info("entering into delete favourite ");
 		Customer customer = customerRepository.findByCustomerId(deleteRequestDto.getCustomerId());
-		System.out.println(customer.getCustomerName());
 		CustomerAccount customerAccount = customerAccountRepository.findByCustomerId(customer);
-		System.out.println(customerAccount.getAccountStatus());
 		Optional<CustomerAccount> customerBeneficiaryAccount = customerAccountRepository
 				.findByCustomerAccountNumber(deleteRequestDto.getBeneficiaryAccountNumber());
 		if (customerBeneficiaryAccount.isPresent()) {

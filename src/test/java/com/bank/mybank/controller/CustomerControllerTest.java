@@ -17,6 +17,8 @@ import com.bank.mybank.dto.RequestDto;
 import com.bank.mybank.dto.ResponseDto;
 import com.bank.mybank.exception.BeneficiaryNotFoundException;
 import com.bank.mybank.exception.CustomerAccountNotFoundException;
+import com.bank.mybank.exception.GeneralException;
+import com.bank.mybank.exception.NoAccountListException;
 import com.bank.mybank.service.CustomerService;
 
 @RunWith(SpringJUnit4ClassRunner.class)
@@ -49,6 +51,21 @@ public class CustomerControllerTest {
 		Integer response = customerController.deleteFavouritePayee(addFavouriteRequestDto).getStatusCodeValue();
 		assertEquals(200, response);
 	}
+	
+	@Test
+	public void testAddFavouritePayeeForPositive() throws NoAccountListException, CustomerAccountNotFoundException, GeneralException {
+		Mockito.when(customerService.addFavourite(addFavouriteRequestDto)).thenReturn(Optional.of(addFavouriteResponseDto));
+		Integer response=customerController.addFavouritePayee(addFavouriteRequestDto).getStatusCodeValue();
+		assertEquals(200, response);
+	}
+	
+	@Test(expected = GeneralException.class)
+	public void testAddFavouritePayeeForNegative() throws NoAccountListException, CustomerAccountNotFoundException, GeneralException {
+		Optional<ResponseDto> responseFavourite=Optional.ofNullable(null);
+		Mockito.when(customerService.addFavourite(addFavouriteRequestDto)).thenReturn(responseFavourite);
+		customerController.addFavouritePayee(addFavouriteRequestDto);
+	}
+	
 
 	@Test
 	public void testGetBeneficiaryDetailsPositive()
