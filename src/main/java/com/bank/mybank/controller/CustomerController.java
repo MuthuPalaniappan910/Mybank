@@ -147,7 +147,7 @@ public class CustomerController {
 		log.info("No beneficiary found");
 		BeneficiaryResponseDto beneficaryResponseDto = new BeneficiaryResponseDto();
 		beneficaryResponseDto.setMessage(ApplicationConstants.BENEFICIARY_INVALID);
-		beneficaryResponseDto.setStatusCode(ApplicationConstants.FAILURECODE);
+		beneficaryResponseDto.setStatusCode(ApplicationConstants.FAILURE_CODE);
 		return new ResponseEntity<>(beneficaryResponseDto, HttpStatus.NOT_FOUND);
 	}
 }

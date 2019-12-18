@@ -109,7 +109,7 @@ public class CustomerServiceTest {
 			throws BeneficiaryNotFoundException, CustomerAccountNotFoundException {
 		Mockito.when(customerRepository.findByCustomerId(1L)).thenReturn(customer);
 		Optional<BeneficiaryResponseDto> expected = customerServiceImpl.getBeneficiaryDetails(2L, 100L);
-		String response = ApplicationConstants.CUSTOMER_NOTFOUND;
+		String response = ApplicationConstants.CUSTOMER_NOT_FOUND;
 		assertEquals(response, expected);
 	}
 

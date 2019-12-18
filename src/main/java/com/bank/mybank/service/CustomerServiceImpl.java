@@ -171,7 +171,7 @@ public class CustomerServiceImpl implements CustomerService {
 			}
 			throw new BeneficiaryNotFoundException(ApplicationConstants.BENEFICIARY_INVALID);
 		}
-		throw new CustomerAccountNotFoundException(ApplicationConstants.CUSTOMER_NOTFOUND);
+		throw new CustomerAccountNotFoundException(ApplicationConstants.CUSTOMER_NOT_FOUND);
 	}
 
 	/**
