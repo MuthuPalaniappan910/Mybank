@@ -42,4 +42,6 @@ public class ApplicationConstants {
 	public static final String INVALID_FAVOURITE_ACCOUNT = "No favourite account found";
 	
 	public static final String CUSTOMER_NOT_FOUND="No customer account found";
+	public static final String BENEFECIARY_NOT_FOUND="Cannot add your account as a beneficiary account";
+	public static final String NO_FAVOURITES="No favourites added";
 }

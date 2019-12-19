@@ -61,6 +61,14 @@ public class CustomerControllerTest {
 	}
 
 	@Test
+	public void deleteFavouriteAccountsForPositive() throws GeneralException {
+		Mockito.when(customerService.deleteFavourite(addFavouriteRequestDto))
+				.thenReturn(Optional.of(addFavouriteResponseDto));
+		ResponseEntity<Optional<ResponseDto>> result = customerController.deleteFavouritePayee(addFavouriteRequestDto);
+		assertNotNull(result);
+	}
+
+	@Test
 	public void testAddFavouritePayeeForPositive()
 			throws NoAccountListException, CustomerAccountNotFoundException, GeneralException {
 		Mockito.when(customerService.addFavourite(addFavouriteRequestDto))
@@ -112,19 +120,29 @@ public class CustomerControllerTest {
 	}
 
 	@Test
-	public void testEditFavouritePayeeForPositive() throws NoAccountListException, CustomerAccountNotFoundException, GeneralException {
+	public void testEditFavouritePayeeForPositive()
+			throws NoAccountListException, CustomerAccountNotFoundException, GeneralException {
 		Mockito.when(customerService.editFavourite(addFavouriteRequestDto))
-		.thenReturn(Optional.of(addFavouriteResponseDto));
+				.thenReturn(Optional.of(addFavouriteResponseDto));
 		Integer response = customerController.editFavouritePayee(addFavouriteRequestDto).getStatusCodeValue();
 		assertEquals(200, response);
 	}
-	
+
 	@Test(expected = GeneralException.class)
-	public void testEditFavouritePayeeForNegative() throws NoAccountListException, CustomerAccountNotFoundException, GeneralException {
+	public void testEditFavouritePayeeForNegative()
+			throws NoAccountListException, CustomerAccountNotFoundException, GeneralException {
 		Optional<ResponseDto> responseFavourite = Optional.ofNullable(null);
-		Mockito.when(customerService.editFavourite(addFavouriteRequestDto))
-		.thenReturn(responseFavourite);
+		Mockito.when(customerService.editFavourite(addFavouriteRequestDto)).thenReturn(responseFavourite);
 		customerController.editFavouritePayee(addFavouriteRequestDto);
 	}
-	
+
+	@Test
+	public void viewFavouriteAccountsForPositive() throws GeneralException {
+		Mockito.when(customerService.viewFavouriteAccounts(1L))
+				.thenReturn(Optional.of(favouriteBeneficiariesResponseDto));
+		ResponseEntity<Optional<FavouriteBeneficiariesResponseDto>> result = customerController
+				.viewFavouriteAccounts(1L);
+		assertNotNull(result);
+	}
+
 }

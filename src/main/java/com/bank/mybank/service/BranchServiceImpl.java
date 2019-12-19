@@ -40,6 +40,7 @@ public class BranchServiceImpl implements BranchService {
 		BranchResponseDto branchResponseDto = new BranchResponseDto();
 		IfscDetail ifscDetail = ifscDetailRepository.findByIfscCode(ifscCode);
 		if (ifscDetail == null) {
+			log.error("Error occured in getBankDetails of BranchServiceImpl");
 			throw new IFSCNotFoundException(ApplicationConstants.IFSC_FAILURE_MESSAGE);
 		}
 		BeanUtils.copyProperties(ifscDetail, branchResponseDto);

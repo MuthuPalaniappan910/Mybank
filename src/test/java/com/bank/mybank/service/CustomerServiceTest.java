@@ -8,6 +8,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
+import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -53,13 +54,19 @@ public class CustomerServiceTest {
 	Customer customer = null;
 	Customer customer1 = null;
 	CustomerAccount customerAccount = null;
+	CustomerAccount customerAccountnew = null;
 	CustomerAccount customerAccountBeneficiary = null;
 	CustomerFavouriteAccount customerFavouriteAccount = null;
 	List<CustomerFavouriteAccount> listOffavouriteAccounts = null;
-	FavouriteBeneficiariesResponseDto favouriteBeneficiariesResponseDto = null;
-	Customer customernew = null;
+
+	List<CustomerAccount> customerAccountList = null;
 	CustomerFavouriteAccountResponse customerFavouriteAccountResponse = null;
 	CustomerFavouriteAccountResponse customerFavouriteAccountResponse2 = null;
+	List<CustomerFavouriteAccountResponse> customerFavouriteAccountResponseList = null;
+	FavouriteBeneficiariesResponseDto favouriteBeneficiariesResponseDto = null;
+	Customer customernew = null;
+	Customer customernega6tive = null;
+
 	List<CustomerFavouriteAccountResponse> customerFavouriteAccountResponselist = null;
 
 	@Before
@@ -132,6 +139,94 @@ public class CustomerServiceTest {
 		customerFavouriteAccountResponse2.setIfscCode("blr2124");
 		customerFavouriteAccountResponselist.add(customerFavouriteAccountResponse);
 		customerFavouriteAccountResponselist.add(customerFavouriteAccountResponse2);
+
+		addFavouriteRequestDto = new RequestDto();
+		addFavouriteRequestDto.setBeneficiaryAccountName("bindu");
+		addFavouriteRequestDto.setBeneficiaryAccountNumber(11L);
+		addFavouriteRequestDto.setCustomerId(1L);
+		addFavouriteRequestDto.setIfscCode("hdfc100");
+
+		addFavouriteResponseDto = new ResponseDto();
+
+		customer = new Customer();
+		customer.setCustomerId(1L);
+		customer.setCustomerName("bindu");
+		customer.setEmail("bindu@gmail.com");
+		customer.setPassword("5146");
+		customer.setPhoneNumber(726387L);
+
+		customer1 = new Customer();
+		customer1.setCustomerId(2L);
+		customer1.setCustomerName("bindu");
+		customer1.setEmail("bindu@gmail.com");
+		customer1.setPassword("5146");
+		customer1.setPhoneNumber(726387L);
+
+		customerAccount = new CustomerAccount();
+		customerAccount.setAccountStatus("active");
+		customerAccount.setAccoutnType("savings");
+		customerAccount.setCustomerAccountNumber(11L);
+		customerAccount.setCustomerId(customer);
+
+		customerAccountBeneficiary = new CustomerAccount();
+		customerAccountBeneficiary.setAccountStatus("active");
+		customerAccountBeneficiary.setAccoutnType("savings");
+		customerAccountBeneficiary.setCustomerAccountNumber(12L);
+		customerAccountBeneficiary.setCustomerId(customer1);
+
+		customerFavouriteAccount = new CustomerFavouriteAccount();
+		customerFavouriteAccount.setCustomerAccountNumber(customerAccount);
+		customerFavouriteAccount.setBeneficiaryAccountName(addFavouriteRequestDto.getBeneficiaryAccountName());
+		customerFavouriteAccount.setBeneficiaryAccountNumber(customerAccountBeneficiary);
+		customerFavouriteAccount.setCustomerFavouriteAccountStatus(ApplicationConstants.STATUS_OF_ACTIVE_ACCOUNT);
+		customerFavouriteAccount.setIfscCode(addFavouriteRequestDto.getIfscCode());
+		customerFavouriteAccount.setAccountAddedOn(LocalDateTime.now());
+
+		listOffavouriteAccounts = new ArrayList<>();
+		listOffavouriteAccounts.add(customerFavouriteAccount);
+
+		customernew = new Customer();
+		customer.setCustomerId(1L);
+		customer.setCustomerName("satvik");
+		customer.setEmail("kj@gmail.com");
+		customer.setPhoneNumber(987676L);
+		customer.setPassword("9876");
+
+		customerAccountnew = new CustomerAccount();
+		customerAccountnew.setAccountStatus("active");
+		customerAccountnew.setAccoutnType("savings");
+		customerAccountnew.setCustomerAccountNumber(2L);
+		customerAccountnew.setCustomerId(customernew);
+
+		customerAccountList = new ArrayList<>();
+		customerAccount = new CustomerAccount();
+		customerAccount.setCustomerAccountNumber(1L);
+		customerAccount.setAccoutnType("savings");
+		customerAccount.setAccountStatus("active");
+
+		CustomerAccount customerAccount2 = new CustomerAccount();
+		customerAccount2.setCustomerAccountNumber(2L);
+		customerAccount2.setAccoutnType("savings");
+		customerAccount2.setAccountStatus("active");
+		customerAccountList.add(customerAccount);
+		customerAccountList.add(customerAccount2);
+
+		customerFavouriteAccountResponse = new CustomerFavouriteAccountResponse();
+		customerFavouriteAccountResponse2 = new CustomerFavouriteAccountResponse();
+		customerFavouriteAccountResponseList = new ArrayList<>();
+		customerFavouriteAccountResponse.setBeneficiaryAccountName("satvik");
+		customerFavouriteAccountResponse.setBeneficiaryAccountNumber(1L);
+		customerFavouriteAccountResponse.setIfscCode("blr2124");
+		customerFavouriteAccountResponse2.setBeneficiaryAccountName("satvik");
+		customerFavouriteAccountResponse2.setBeneficiaryAccountNumber(2L);
+		customerFavouriteAccountResponse2.setIfscCode("blr2124");
+		customerFavouriteAccountResponseList.add(customerFavouriteAccountResponse);
+		customerFavouriteAccountResponseList.add(customerFavouriteAccountResponse2);
+
+		favouriteBeneficiariesResponseDto = new FavouriteBeneficiariesResponseDto();
+		favouriteBeneficiariesResponseDto.setStatusCode(200);
+		favouriteBeneficiariesResponseDto.setMessage("satvik");
+		favouriteBeneficiariesResponseDto.setFavouritesList(customerFavouriteAccountResponseList);
 
 	}
 
@@ -257,29 +352,6 @@ public class CustomerServiceTest {
 		customerServiceImpl.addFavourite(addFavouriteRequestDto);
 	}
 
-	@Test(expected = GeneralException.class)
-	public void testAddFavouriteForNegativeInvalidAccount()
-			throws NoAccountListException, CustomerAccountNotFoundException, GeneralException {
-		addFavouriteRequestDto.setBeneficiaryAccountNumber(11L);
-		CustomerAccount customerBeneficiary = new CustomerAccount();
-		customerBeneficiary.setAccountStatus("active");
-		customerBeneficiary.setAccoutnType("savings");
-		customerBeneficiary.setCustomerAccountNumber(11L);
-		customerBeneficiary.setCustomerId(customer1);
-		Mockito.when(customerRepository.findByCustomerId(addFavouriteRequestDto.getCustomerId())).thenReturn(customer);
-		Mockito.when(customerAccountRepository.findByCustomerId(customer)).thenReturn(customerAccount);
-		Mockito.when(customerAccountRepository
-				.findByCustomerAccountNumber(addFavouriteRequestDto.getBeneficiaryAccountNumber()))
-				.thenReturn(Optional.of(customerBeneficiary));
-		Optional<CustomerFavouriteAccount> customerFavouriteAccountDetails = Optional.ofNullable(null);
-		Mockito.when(customerFavouriteAccountRepository
-				.findByCustomerAccountNumberAndBeneficiaryAccountNumber(customerAccount, customerAccountBeneficiary))
-				.thenReturn(customerFavouriteAccountDetails);
-
-		customerServiceImpl.addFavourite(addFavouriteRequestDto);
-
-	}
-
 	@Test
 	public void testDeleteFavouriteForPositive() {
 		Mockito.when(customerRepository.findByCustomerId(addFavouriteRequestDto.getCustomerId())).thenReturn(customer);
@@ -357,10 +429,9 @@ public class CustomerServiceTest {
 			throws NoAccountListException, CustomerAccountNotFoundException, GeneralException {
 		Mockito.when(customerRepository.findByCustomerId(addFavouriteRequestDto.getCustomerId())).thenReturn(customer);
 		Mockito.when(customerAccountRepository.findByCustomerId(customer)).thenReturn(customerAccount);
-		Optional<CustomerAccount> customerDetails = Optional.ofNullable(null);
 		Mockito.when(customerAccountRepository
 				.findByCustomerAccountNumber(addFavouriteRequestDto.getBeneficiaryAccountNumber()))
-				.thenReturn(customerDetails);
+				.thenReturn(Optional.ofNullable(null));
 		customerServiceImpl.editFavourite(addFavouriteRequestDto);
 	}
 
@@ -379,5 +450,64 @@ public class CustomerServiceTest {
 		Optional<ResponseDto> addFavouriteResponseDto = customerServiceImpl.editFavourite(addFavouriteRequestDto);
 		assertNotNull(addFavouriteResponseDto);
 	}
-	
+
+	@Test(expected = GeneralException.class)
+	public void viewFavouriteAccountsNegative1() throws GeneralException {
+		Mockito.when(customerRepository.findByCustomerId(addFavouriteRequestDto.getCustomerId())).thenReturn(customer);
+		Mockito.when(customerAccountRepository.findByCustomerId(customer)).thenReturn(customerAccount);
+
+		Mockito.when(customerFavouriteAccountRepository
+				.findByCustomerAccountNumberAndCustomerFavouriteAccountStatusOrderByAccountAddedOnDesc(customerAccount,
+						customerAccount.getAccountStatus()))
+				.thenReturn(Optional.of(listOffavouriteAccounts));
+
+		FavouriteBeneficiariesResponseDto response = (FavouriteBeneficiariesResponseDto) Mockito
+				.when(customerServiceImpl.viewFavouriteAccounts(customernew.getCustomerId()))
+				.thenReturn(Optional.of(favouriteBeneficiariesResponseDto));
+		assertNotNull(response);
+	}
+
+	@Test(expected = GeneralException.class)
+	public void viewFavouriteAccountsNegative2() throws GeneralException {
+		Optional<Customer> customerDetails = Optional.ofNullable(null);
+		Mockito.when(customerRepository.findById(1L)).thenReturn(customerDetails);
+		customerServiceImpl.viewFavouriteAccounts(1L);
+	}
+
+	@Test(expected = GeneralException.class)
+	public void viewFavouriteAccountsNegative3() throws GeneralException {
+		Mockito.when(customerRepository.findById(1L)).thenReturn(Optional.of(customer));
+		Mockito.when(customerAccountRepository.findByCustomerId(Optional.of(customer1)))
+				.thenReturn(Optional.of(customerAccountList));
+		customerServiceImpl.viewFavouriteAccounts(1L);
+	}
+
+	@Test
+	public void viewFavouriteAccountsNegative4() throws GeneralException {
+		Mockito.when(customerRepository.findById(1L)).thenReturn(Optional.of(customer));
+		Mockito.when(customerAccountRepository.findByCustomerId(Optional.of(customer)))
+				.thenReturn(Optional.of(customerAccountList));
+		Mockito.when(customerFavouriteAccountRepository
+				.findByCustomerAccountNumberAndCustomerFavouriteAccountStatusOrderByAccountAddedOnDesc(customerAccount,
+						"a"))
+				.thenReturn(Optional.of(listOffavouriteAccounts));
+		Optional<FavouriteBeneficiariesResponseDto> favouriteBeneficiariesResponseDto = customerServiceImpl
+				.viewFavouriteAccounts(1L);
+		Assert.assertNotNull(favouriteBeneficiariesResponseDto);
+	}
+
+	@Test
+	public void viewFavouriteAccountsNegative5() throws GeneralException {
+		Mockito.when(customerRepository.findById(1L)).thenReturn(Optional.of(customer));
+		Mockito.when(customerAccountRepository.findByCustomerId(Optional.of(customer)))
+				.thenReturn(Optional.of(customerAccountList));
+		Mockito.when(customerFavouriteAccountRepository
+				.findByCustomerAccountNumberAndCustomerFavouriteAccountStatusOrderByAccountAddedOnDesc(customerAccount,
+						"active"))
+				.thenReturn(Optional.of(listOffavouriteAccounts));
+		Optional<FavouriteBeneficiariesResponseDto> favouriteBeneficiariesResponseDto = customerServiceImpl
+				.viewFavouriteAccounts(1L);
+		Assert.assertNotNull(favouriteBeneficiariesResponseDto);
+	}
+
 }

@@ -32,21 +32,21 @@ public class LoginControllerTest {
 	public void setUp() {
 
 		loginRequestDto.setCustomerId(1L);
-		loginRequestDto.setPassword("c");	
+		loginRequestDto.setPassword("c");
 		loginResponsedto.setStatusCode(200);
 	}
-	
+
 	@Test
 	public void testUserLoginPositive() throws GeneralException {
 		Mockito.when(loginServiceImplementation.login(loginRequestDto)).thenReturn(Optional.of(loginResponsedto));
-		ResponseEntity<Optional<LoginResponseDto>> loginResponsedto=loginController.login(loginRequestDto);
+		ResponseEntity<Optional<LoginResponseDto>> loginResponsedto = loginController.login(loginRequestDto);
 		Assert.assertNotNull(loginResponsedto);
 	}
-	
+
 	@Test
 	public void testUserLoginNegative() throws GeneralException {
 		Mockito.when(loginServiceImplementation.login(loginRequestDto)).thenReturn(Optional.ofNullable(null));
-		ResponseEntity<Optional<LoginResponseDto>> loginResponsedto=loginController.login(loginRequestDto);
+		ResponseEntity<Optional<LoginResponseDto>> loginResponsedto = loginController.login(loginRequestDto);
 		Assert.assertNotNull(loginResponsedto);
 	}
 }

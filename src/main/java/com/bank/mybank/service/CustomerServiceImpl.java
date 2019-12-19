@@ -65,6 +65,7 @@ public class CustomerServiceImpl implements CustomerService {
 		Optional<CustomerAccount> customerBeneficiaryAccount = customerAccountRepository
 				.findByCustomerAccountNumber(editFavouriteRequestDto.getBeneficiaryAccountNumber());
 		if (!customerBeneficiaryAccount.isPresent()) {
+			log.error("Exception occured in editFavourite");
 			throw new GeneralException(ApplicationConstants.INVALID_ACCOUNT_NUMBER);
 		}
 
@@ -103,6 +104,7 @@ public class CustomerServiceImpl implements CustomerService {
 		Optional<CustomerAccount> customerBeneficiaryAccount = customerAccountRepository
 				.findByCustomerAccountNumber(addFavouriteRequestDto.getBeneficiaryAccountNumber());
 		if (!customerBeneficiaryAccount.isPresent()) {
+			log.error("Exception occured in addFavourite");
 			throw new GeneralException(ApplicationConstants.BENEFICIARY_ALREADY_EXISTS);
 		}
 
@@ -112,9 +114,11 @@ public class CustomerServiceImpl implements CustomerService {
 		Long existingAccount = customerAccount.getCustomerAccountNumber();
 		Long givenAccount = addFavouriteRequestDto.getBeneficiaryAccountNumber();
 		if (existingAccount.equals(givenAccount)) {
-			throw new GeneralException("Cannot add your account as a beneficiary account");
+			log.error("Exception occured in addFavourite:Cannot add your account as a beneficiary account");
+			throw new GeneralException(ApplicationConstants.BENEFECIARY_NOT_FOUND);
 		}
 		if (customerFavouriteAccountDetail.isPresent()) {
+			log.error("Exception occured in addFavourite:"+ApplicationConstants.BENEFICIARY_ALREADY_EXISTS);
 			throw new GeneralException(ApplicationConstants.BENEFICIARY_ALREADY_EXISTS);
 		}
 
@@ -132,7 +136,7 @@ public class CustomerServiceImpl implements CustomerService {
 			ResponseDto addFavouriteResponseDto = new ResponseDto();
 			return Optional.of(addFavouriteResponseDto);
 		}
-
+		log.error("Exception occured in addFavourite:"+ApplicationConstants.BENEFICIARY_LIST_EXCEEDS);
 		throw new NoAccountListException(ApplicationConstants.BENEFICIARY_LIST_EXCEEDS);
 	}
 
@@ -173,10 +177,13 @@ public class CustomerServiceImpl implements CustomerService {
 					beneficiaryResponseDto.setMessage(ApplicationConstants.BENEFICIARY_VALID);
 					return Optional.of(beneficiaryResponseDto);
 				}
+				log.error("Exception occured in getBeneficiaryDetails:"+ApplicationConstants.ACCOUNT_BENEFICIARY_MISMATCH);
 				throw new BeneficiaryNotFoundException(ApplicationConstants.ACCOUNT_BENEFICIARY_MISMATCH);
 			}
+			log.error("Exception occured in getBeneficiaryDetails:"+ApplicationConstants.BENEFICIARY_INVALID);
 			throw new BeneficiaryNotFoundException(ApplicationConstants.BENEFICIARY_INVALID);
 		}
+		log.error("Exception occured in getBeneficiaryDetails:"+ApplicationConstants.CUSTOMER_NOT_FOUND);
 		throw new CustomerAccountNotFoundException(ApplicationConstants.CUSTOMER_NOT_FOUND);
 	}
 
@@ -225,15 +232,18 @@ public class CustomerServiceImpl implements CustomerService {
 		Optional<Customer> customer = customerRepository.findById(customerId);
 
 		if (!customer.isPresent()) {
+			log.error("Exception occured in getBeneficiaryDetails:"+ApplicationConstants.INVALID_CUSTOMER);
 			throw new GeneralException(ApplicationConstants.INVALID_CUSTOMER);
 		}
 
 		Optional<List<CustomerAccount>> customerAccountList = customerAccountRepository.findByCustomerId(customer);
 		if (!customerAccountList.isPresent()) {
+			log.error("Exception occured in getBeneficiaryDetails:"+ApplicationConstants.INVALID_ACCOUNT_NUMBER);
 			throw new GeneralException(ApplicationConstants.INVALID_ACCOUNT_NUMBER);
 		}
 		if (customerAccountList.get().isEmpty()) {
-			throw new GeneralException("No favourites added");
+			log.error("Exception occured in getBeneficiaryDetails:"+ApplicationConstants.NO_FAVOURITES);
+			throw new GeneralException(ApplicationConstants.NO_FAVOURITES);
 		}
 		for (CustomerAccount finalListCustomer : customerAccountList.get()) {
 
