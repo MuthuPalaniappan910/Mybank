@@ -22,7 +22,7 @@ import lombok.extern.slf4j.Slf4j;
 /**
  * 
  * @author Chethana M
- * @Description This class is used to perform all the customer related
+ *  This class is used to perform all the customer related
  *              authentication operations
  *
  */

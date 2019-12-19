@@ -32,7 +32,11 @@ import lombok.extern.slf4j.Slf4j;
 @RestController
 @CrossOrigin(allowedHeaders = { "*", "*/" }, origins = { "*", "*/" })
 @Slf4j
-
+/**
+ * 
+ * This class is used to perform all the end user related operations
+ *
+ */
 public class CustomerController {
 	@Autowired
 	CustomerService customerService;
@@ -81,6 +85,7 @@ public class CustomerController {
 	}
 
 	/**
+	 * This method is used to view favourite active accounts
 	 * @author Mahesh
 	 * @param customerId
 	 * @return
@@ -105,21 +110,24 @@ public class CustomerController {
 	}
 
 	/**
-	 * 
-	 * @param addFavouriteRequestDto
-	 * @return
+	 * This method is used to edit the details of the added favourite account
+	 * @param editFavouriteRequestDto
+	 * @return ResponseDto success/failure of edit response
 	 * @throws GeneralException
 	 * @throws NoAccountListException
 	 * @throws CustomerAccountNotFoundException
 	 */
 
 	@PutMapping("/beneficiary")
-	public ResponseEntity<Optional<ResponseDto>> editFavouritePayee(@RequestBody RequestDto addFavouriteRequestDto)
+	public ResponseEntity<Optional<ResponseDto>> editFavouritePayee(@RequestBody RequestDto editFavouriteRequestDto)
 			throws GeneralException, NoAccountListException, CustomerAccountNotFoundException {
-		Optional<ResponseDto> favouriteListResponse = customerService.editFavourite(addFavouriteRequestDto);
+		Optional<ResponseDto> favouriteListResponse = customerService.editFavourite(editFavouriteRequestDto);
 		log.info("Editing favourite payee");
 		if (!favouriteListResponse.isPresent()) {
-			throw new GeneralException("Unable to edit favourite payee");
+			ResponseDto responseDto= new ResponseDto();
+			responseDto.setStatusCode(ApplicationConstants.FAILURE_CODE);
+			responseDto.setMessage(ApplicationConstants.FAVOURITE_ACCOUNT_FAILURE_MESSAGE);
+			return new ResponseEntity<>(Optional.of(responseDto), HttpStatus.OK);
 		}
 		favouriteListResponse.get().setStatusCode(ApplicationConstants.SUCCESS_CODE);
 		favouriteListResponse.get().setMessage(ApplicationConstants.BENEFICIARY_ADDED_SUCCESSFULLY);

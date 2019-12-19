@@ -26,7 +26,11 @@ import com.bank.mybank.repository.CustomerFavouriteAccountRepository;
 import com.bank.mybank.repository.CustomerRepository;
 
 import lombok.extern.slf4j.Slf4j;
-
+/**
+ * 
+ * This class is used to provide implementations for all the end user related operations
+ *
+ */
 @Service
 @Slf4j
 public class CustomerServiceImpl implements CustomerService {
@@ -46,22 +50,22 @@ public class CustomerServiceImpl implements CustomerService {
 	 * This method is used to edit the details of the added favourite account
 	 * 
 	 * @author Chethana
-	 * @param addFavouriteRequestDto
-	 * @return
+	 * @param editFavouriteRequestDto
+	 * @return ResponseDto returns success/failure operation
 	 * @throws NoAccountListException
 	 * @throws CustomerAccountNotFoundException
 	 * @throws GeneralException
 	 */
 
-	public Optional<ResponseDto> editFavourite(RequestDto addFavouriteRequestDto)
+	public Optional<ResponseDto> editFavourite(RequestDto editFavouriteRequestDto)
 			throws NoAccountListException, CustomerAccountNotFoundException, GeneralException {
 		log.info("entering into edit favourite payee");
-		Customer customer = customerRepository.findByCustomerId(addFavouriteRequestDto.getCustomerId());
+		Customer customer = customerRepository.findByCustomerId(editFavouriteRequestDto.getCustomerId());
 		CustomerAccount customerAccount = customerAccountRepository.findByCustomerId(customer);
 		Optional<CustomerAccount> customerBeneficiaryAccount = customerAccountRepository
-				.findByCustomerAccountNumber(addFavouriteRequestDto.getBeneficiaryAccountNumber());
+				.findByCustomerAccountNumber(editFavouriteRequestDto.getBeneficiaryAccountNumber());
 		if (!customerBeneficiaryAccount.isPresent()) {
-			throw new GeneralException(ApplicationConstants.BENEFICIARY_ALREADY_EXISTS);
+			throw new GeneralException(ApplicationConstants.INVALID_ACCOUNT_NUMBER);
 		}
 
 		Optional<CustomerFavouriteAccount> customerFavouriteAccountDetail = customerFavouriteAccountRepository
@@ -70,8 +74,8 @@ public class CustomerServiceImpl implements CustomerService {
 		if (customerFavouriteAccountDetail.isPresent()) {
 
 			customerFavouriteAccountDetail.get()
-					.setBeneficiaryAccountName(addFavouriteRequestDto.getBeneficiaryAccountName());
-			customerFavouriteAccountDetail.get().setIfscCode(addFavouriteRequestDto.getIfscCode());
+					.setBeneficiaryAccountName(editFavouriteRequestDto.getBeneficiaryAccountName());
+			customerFavouriteAccountDetail.get().setIfscCode(editFavouriteRequestDto.getIfscCode());
 			customerFavouriteAccountDetail.get().setAccountAddedOn(LocalDateTime.now());
 			customerFavouriteAccountRepository.save(customerFavouriteAccountDetail.get());
 		}
@@ -84,7 +88,7 @@ public class CustomerServiceImpl implements CustomerService {
 	 * 
 	 * @author Bindu
 	 * @param addFavouriteRequestDto
-	 * @return
+	 * @return ResponseDto
 	 * @throws NoAccountListException
 	 * @throws CustomerAccountNotFoundException
 	 * @throws GeneralException
@@ -141,7 +145,7 @@ public class CustomerServiceImpl implements CustomerService {
 	 * 
 	 * @param customerId
 	 * @param beneficiaryAccountNumber
-	 * @return
+	 * @return BeneficiaryResponseDto
 	 * @throws BeneficiaryNotFoundException
 	 * @throws CustomerAccountNotFoundException
 	 */
@@ -206,9 +210,10 @@ public class CustomerServiceImpl implements CustomerService {
 	}
 
 	/**
+	 * This method is used to view favourite active accounts
 	 * @author Mahesh
 	 * @param customerId
-	 * @return
+	 * @return FavouriteBeneficiariesResponseDto
 	 * @throws GeneralException
 	 */
 	public Optional<FavouriteBeneficiariesResponseDto> viewFavouriteAccounts(Long customerId) throws GeneralException {

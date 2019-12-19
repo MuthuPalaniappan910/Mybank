@@ -14,6 +14,10 @@ import com.bank.mybank.repository.IfscDetailRepository;
 
 import lombok.extern.slf4j.Slf4j;
 
+/**
+ * @author Muthu This class is used to perform the branch details related
+ *         operations
+ **/
 @Service
 @Slf4j
 public class BranchServiceImpl implements BranchService {

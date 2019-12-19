@@ -18,6 +18,10 @@ import com.bank.mybank.service.BranchService;
 
 import lombok.extern.slf4j.Slf4j;
 
+/**
+ * @author Muthu This class is used to perform the branch details related
+ *         operations
+ **/
 @Slf4j
 @RequestMapping("/branches")
 @RestController

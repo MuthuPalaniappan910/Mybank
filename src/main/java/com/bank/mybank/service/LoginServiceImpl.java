@@ -13,7 +13,13 @@ import com.bank.mybank.exception.GeneralException;
 import com.bank.mybank.repository.CustomerRepository;
 
 import lombok.extern.slf4j.Slf4j;
-
+/**
+ * 
+ * @author Chethana M
+ *  This class is used to perform all the customer related
+ *              authentication operations
+ *
+ */
 @Service
 @Slf4j
 public class LoginServiceImpl implements LoginService {
